@@ -54,7 +54,7 @@ public abstract class Database {
             rs = ps.executeQuery();
             while(rs.next()){
                 if(rs.getString("UUID").equalsIgnoreCase(uuid.toString())){
-                    return rs.getInt("score");
+                    return rs.getInt("money");
                 }
             }
         } catch (SQLException ex) {

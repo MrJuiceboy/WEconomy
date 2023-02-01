@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.TimeUnit;
 
 public class MySQL extends Database {
 
@@ -45,15 +46,17 @@ public class MySQL extends Database {
         final String databaseUser = fileConfiguration.getString("databaseUser");
         final String databasePass = fileConfiguration.getString("databasePass");
 
+        final int maximumPoolSize = Runtime.getRuntime().availableProcessors() * 2 + 1;
 
-        hikariConfig.setMaximumPoolSize(15);
+        hikariConfig.setPoolName(WEconomy.getInstance().getName() + "-" + databaseName);
         hikariConfig.setJdbcUrl(toURL(databaseHost, databasePort, databaseName));
+        hikariConfig.setConnectionTestQuery("SELECT 1");
         hikariConfig.setUsername(databaseUser);
         hikariConfig.setPassword(databasePass);
-        hikariConfig.setMaxLifetime(600000L);
-        hikariConfig.setIdleTimeout(300000L);
-        hikariConfig.setLeakDetectionThreshold(300000L);
-        hikariConfig.setConnectionTimeout(10000L);
+        hikariConfig.setMinimumIdle(Math.min(maximumPoolSize, 10));
+        hikariConfig.setMaxLifetime(TimeUnit.MINUTES.toMillis(30L));
+        hikariConfig.setConnectionTimeout(TimeUnit.SECONDS.toMillis(10L));
+        hikariConfig.setMaximumPoolSize(maximumPoolSize);
 
         MineLogger.info(ChatColor.GREEN + "[Database] Is now connected !");
 
