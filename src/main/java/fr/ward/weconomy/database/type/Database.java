@@ -1,6 +1,7 @@
 package fr.ward.weconomy.database.type;
 
 import fr.ward.weconomy.WEconomy;
+import fr.ward.weconomy.database.DatabaseType;
 import fr.ward.weconomy.utils.MineLogger;
 import org.bukkit.OfflinePlayer;
 
@@ -9,7 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public abstract class Database {
 
@@ -20,11 +20,11 @@ public abstract class Database {
         this.tableName = wEconomy.getConfig().getString("databaseTable");
     }
 
-    public abstract Connection getSQLConnection();
+    public abstract Connection getSQLConnection() throws SQLException;
 
-    public abstract void load();
+    public abstract void load() throws SQLException;
 
-    public void initialize() {
+    public void initialize() throws SQLException {
         connection = getSQLConnection();
         try{
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + tableName + " WHERE UUID = ?");
@@ -36,7 +36,11 @@ public abstract class Database {
     }
 
     public synchronized void addIntoDatabase(OfflinePlayer player) {
-        execute("INSERT OR IGNORE INTO " + tableName + " VALUES(?,?)", player.getUniqueId().toString(), 0);
+        final DatabaseType databaseType = WEconomy.getInstance().getDatabaseType();
+        switch (databaseType) {
+            case SQLITE -> execute("INSERT OR IGNORE INTO " + tableName + " VALUES(?,?)", player.getUniqueId().toString(), 0);
+            case MYSQL -> execute("INSERT IGNORE INTO " + tableName + " VALUES(?,?)", player.getUniqueId().toString(), 0);
+        }
     }
 
     public Integer getMoney(UUID uuid) {

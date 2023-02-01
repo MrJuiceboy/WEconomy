@@ -1,4 +1,8 @@
-prefixName: "§7[§6WEconomy§7]"
+prefixName: §7[§6WEconomy§7]
 databaseType: SQLITE
-databaseName: "WEconomy"
-databaseTable: "WEconomy_data"
+databaseHost:
+databaseUser:
+databasePass:
+databaseName: WEconomy
+databaseTable: WEconomy_data
+databasePort: 3306

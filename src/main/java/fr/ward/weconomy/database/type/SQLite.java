@@ -50,7 +50,7 @@ public class SQLite extends Database {
     }
 
     @Override
-    public void load() {
+    public void load() throws SQLException {
         connection = getSQLConnection();
         try {
             Statement s = connection.createStatement();

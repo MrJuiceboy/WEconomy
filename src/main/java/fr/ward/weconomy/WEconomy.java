@@ -15,6 +15,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.SQLException;
 import java.util.Objects;
 
 public class WEconomy extends JavaPlugin {
@@ -58,7 +59,11 @@ public class WEconomy extends JavaPlugin {
             return;
         }
 
-        initDatabaseType(getDatabaseType());
+        try {
+            initDatabaseType(getDatabaseType());
+        } catch (SQLException e) {
+            MineLogger.error("" + e);
+        }
 
         final PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new PlayerJoinLeaveListener(), this);
@@ -89,7 +94,7 @@ public class WEconomy extends JavaPlugin {
         return database;
     }
 
-    private void initDatabaseType(DatabaseType databaseType) {
+    private void initDatabaseType(DatabaseType databaseType) throws SQLException {
         switch (databaseType) {
             case SQLITE -> {
                 this.database = new SQLite(this);
