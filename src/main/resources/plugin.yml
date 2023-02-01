@@ -1,0 +1,10 @@
+name: WEconomy
+version: 0.0.1
+description: WEconomy
+main: fr.ward.weconomy.WEconomy
+author: Ward
+softdepend: [PlaceholderAPI]
+commands:
+  economy:
+    description: Main command
+    usage: /economy
