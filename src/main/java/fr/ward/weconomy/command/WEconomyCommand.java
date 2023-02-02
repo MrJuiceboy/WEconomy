@@ -60,7 +60,7 @@ public class WEconomyCommand implements CommandExecutor {
                     return true;
                 }
             }
-            
+
             player.sendMessage(WEconomy.getInstance().getPrefix() + MessageManager.BAD_SYNTAX.build(player));
             return false;
         }

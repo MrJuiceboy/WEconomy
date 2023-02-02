@@ -10,8 +10,10 @@ import fr.ward.weconomy.manager.CacheManager;
 import fr.ward.weconomy.manager.DiscordManager;
 import fr.ward.weconomy.manager.EconomyManager;
 import fr.ward.weconomy.placeholder.SomeExpansion;
+import fr.ward.weconomy.utils.Metrics;
 import fr.ward.weconomy.utils.MineLogger;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
@@ -19,6 +21,8 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class WEconomy extends JavaPlugin {
@@ -74,6 +78,8 @@ public class WEconomy extends JavaPlugin {
         pluginManager.registerEvents(new PlayerJoinLeaveListener(), this);
 
         Objects.requireNonNull(this.getCommand("economy")).setExecutor(new WEconomyCommand());
+
+        loadBStats();
 
         super.onEnable();
     }
@@ -158,6 +164,20 @@ public class WEconomy extends JavaPlugin {
             return DatabaseType.MYSQL;
         }
         return DatabaseType.SQLITE;
+    }
+
+    private void loadBStats() {
+        final Metrics metrics = new Metrics(this, 17624);
+
+        metrics.addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
+        metrics.addCustomChart(new Metrics.SingleLineChart("servers", () -> 1));
+
+        metrics.addCustomChart(new Metrics.SingleLineChart("players_and_servers_using_weconomy", () -> {
+            Map<String, Integer> valueMap = new HashMap<>();
+            valueMap.put("servers", 1);
+            valueMap.put("players", Bukkit.getOnlinePlayers().size());
+            return valueMap.size();
+        }));
     }
 
     @Override
