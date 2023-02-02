@@ -1,4 +1,5 @@
 prefixName: '&7[&6WEconomy&7]'
+moneyName: '$'
 databaseType: SQLITE
 databaseHost:
 databaseUser:
@@ -6,18 +7,24 @@ databasePass:
 databaseName: WEconomy
 databaseTable: WEconomy_data
 databasePort: 3306
-MessageGetMoney: '&7Your balance is: &a%weconomy_current%'
-MessageNegativeAmount: '&cYou cannot put a negative amount !'
-MessagePlayerNotFound: '&cPlayer not found !'
-MessageInsufficientFunds: '&cInsufficient funds !'
-MessagePayYourself: '&cYou cant pay yourself !'
-MessagePaySend: '&aYou payed &2%receiver% &6%amount%'
-MessagePayReceive: '&2%player% &apayed you &6%amount%'
-MessageGiveSend: '&bYou give &3%receiver% &6%amount%'
-MessageGiveReceive: '&3%player% &bgive you &6%amount%'
-MessageRemoveSend: '&cYou remove &4%receiver% &6%amount%'
-MessageRemoveReceive: '&4%player% &cremove you &6%amount%'
-MessageResetAll: '&6Reset of all accounts completed !'
-MessageBalTop: '&e✪ &6[%rank%] &a%player% &7(%amount%)'
+MessageGetMoney: '&7Your balance is: &a%weconomy_current% &6$'
+MessageNegativeAmount: '&cYou cannot put a negative amount!'
+MessagePlayerNotFound: '&cPlayer not found!'
+MessageInsufficientFunds: '&cInsufficient funds!'
+MessagePayYourself: '&cYou cant pay yourself!'
+MessagePaySend: '&aYou payed &2%receiver% &6%amount% &6$'
+MessagePayReceive: '&2%player% &apayed you &6%amount% &6$'
+MessageGiveSend: '&bYou give &3%receiver% &6%amount% &6$'
+MessageGiveReceive: '&3%player% &bgive you &6%amount% &6$'
+MessageRemoveSend: '&cYou remove &4%receiver% &6%amount% &6$'
+MessageRemoveReceive: '&4%player% &cremove you &6%amount% &6$'
+MessageResetAll: '&6Reset of all accounts completed!'
+MessageBalTop: '&e✪ &6[%rank%] &a%player% &7(%amount% &6$)'
 MessageBalTopNotFound: '&e✪ &6[%rank%] &7No information yet'
-MessageNoPermission: '&cYou do not have permission to access this command !'
+MessageNoPermission: '&cYou do not have permission to access this command!'
+MessageBadSyntax: '&cWrong syntax for this command!'
+discordBotEnabled: false
+discordBotName: WEconomy
+discordBotToken: ''
+discordServerID: ''
+discordCanalID: ''

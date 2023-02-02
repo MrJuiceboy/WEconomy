@@ -3,6 +3,7 @@ package fr.ward.weconomy.command;
 import fr.ward.weconomy.WEconomy;
 import fr.ward.weconomy.cache.WPlayerCache;
 import fr.ward.weconomy.database.type.Database;
+import fr.ward.weconomy.discord.DiscordMessage;
 import fr.ward.weconomy.manager.CacheManager;
 import fr.ward.weconomy.manager.EconomyManager;
 import fr.ward.weconomy.manager.MessageManager;
@@ -59,12 +60,15 @@ public class WEconomyCommand implements CommandExecutor {
                     return true;
                 }
             }
+            
+            player.sendMessage(WEconomy.getInstance().getPrefix() + MessageManager.BAD_SYNTAX.build(player));
+            return false;
         }
         return false;
     }
 
     private void top(Player player) {
-        if(!player.isOp() || !player.hasPermission("weconomy.top")) {
+        if(checkPermission(player, "weconomy.top")) {
             player.sendMessage(MessageManager.NO_PERMISSION.build(player));
             return;
         }
@@ -78,7 +82,7 @@ public class WEconomyCommand implements CommandExecutor {
     private void payingPlayer(Player player, String target, int integer) {
         final EconomyManager economyManager = WEconomy.getInstance().getEconomy();
 
-        if(!player.isOp() || !player.hasPermission("weconomy.pay")) {
+        if(checkPermission(player, "weconomy.pay")) {
             player.sendMessage(MessageManager.NO_PERMISSION.build(player));
             return;
         }
@@ -103,6 +107,7 @@ public class WEconomyCommand implements CommandExecutor {
         if(receiver == null){
             player.sendMessage(MessageManager.PLAYER_NOT_FOUND.build(player));
         } else {
+            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.TRANSACTION, player.getName(), receiver.getName(), integer);
             economyManager.withdrawPlayer(player.getUniqueId().toString(), integer);
             economyManager.depositPlayer(receiver.getUniqueId().toString(), integer);
             player.sendMessage(MessageManager.SEND_PAY.build(player, receiver, integer));
@@ -113,7 +118,7 @@ public class WEconomyCommand implements CommandExecutor {
     private void givePlayer(Player player, String target, int integer) {
         final EconomyManager economyManager = WEconomy.getInstance().getEconomy();
 
-        if(!player.isOp() || !player.hasPermission("weconomy.give")) {
+        if(checkPermission(player, "weconomy.give")) {
             player.sendMessage(MessageManager.NO_PERMISSION.build(player));
             return;
         }
@@ -128,6 +133,7 @@ public class WEconomyCommand implements CommandExecutor {
         if(receiver == null){
             player.sendMessage(MessageManager.PLAYER_NOT_FOUND.build(player));
         } else {
+            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.GIVE, player.getName(), receiver.getName(), integer);
             economyManager.depositPlayer(receiver.getUniqueId().toString(), integer);
             player.sendMessage(MessageManager.SEND_GIVE.build(player, receiver, integer));
             receiver.sendMessage(MessageManager.RECEIVER_GIVE.build(player, receiver, integer));
@@ -137,7 +143,7 @@ public class WEconomyCommand implements CommandExecutor {
     private void removePlayer(Player player, String target, int integer) {
         final EconomyManager economyManager = WEconomy.getInstance().getEconomy();
 
-        if(!player.isOp() || !player.hasPermission("weconomy.remove")) {
+        if(checkPermission(player, "weconomy.remove")) {
             player.sendMessage(MessageManager.NO_PERMISSION.build(player));
             return;
         }
@@ -152,6 +158,7 @@ public class WEconomyCommand implements CommandExecutor {
         if(receiver == null){
             player.sendMessage(MessageManager.PLAYER_NOT_FOUND.build(player));
         } else {
+            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, player.getName(), receiver.getName(), integer);
             player.sendMessage(MessageManager.SEND_REMOVE.build(player, receiver, integer));
             receiver.sendMessage(MessageManager.RECEIVER_REMOVE.build(player, receiver, integer));
             economyManager.withdrawPlayer(receiver.getUniqueId().toString(), integer);
@@ -162,11 +169,12 @@ public class WEconomyCommand implements CommandExecutor {
         final CacheManager cacheManager = WEconomy.getInstance().getCacheManager();
         final Database database = WEconomy.getInstance().getDatabase();
 
-        if(!player.isOp() || !player.hasPermission("weconomy.reset")) {
+        if(checkPermission(player, "weconomy.reset")) {
             player.sendMessage(MessageManager.NO_PERMISSION.build(player));
             return;
         }
 
+        WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.RESET, player.getName(), null, 0);
         cacheManager.getPlayerCaches().clear();
         database.reset();
         for(Player plz : Bukkit.getOnlinePlayers()) {
@@ -178,7 +186,7 @@ public class WEconomyCommand implements CommandExecutor {
     private void reset(Player player, String target) {
         final EconomyManager economyManager = WEconomy.getInstance().getEconomy();
 
-        if(!player.isOp() || !player.hasPermission("weconomy.reset")) {
+        if(checkPermission(player, "weconomy.reset")) {
             player.sendMessage(MessageManager.NO_PERMISSION.build(player));
             return;
         }
@@ -190,9 +198,16 @@ public class WEconomyCommand implements CommandExecutor {
         } else {
             final WPlayerCache wPlayerCache = WEconomy.getInstance().getCacheManager().getPlayerCache(receiver.getUniqueId());
 
+            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, player.getName(), receiver.getName(), wPlayerCache.getMoney());
             player.sendMessage(MessageManager.SEND_REMOVE.build(player, receiver, wPlayerCache.getMoney()));
             receiver.sendMessage(MessageManager.RECEIVER_REMOVE.build(player, receiver, wPlayerCache.getMoney()));
             economyManager.withdrawPlayer(receiver.getUniqueId().toString(), wPlayerCache.getMoney());
         }
+    }
+
+    private boolean checkPermission(Player player, String permission) {
+        if(player.isOp()) {
+            return false;
+        } else return !player.hasPermission(permission);
     }
 }

@@ -7,6 +7,7 @@ import fr.ward.weconomy.database.type.MySQL;
 import fr.ward.weconomy.database.type.SQLite;
 import fr.ward.weconomy.listeners.PlayerJoinLeaveListener;
 import fr.ward.weconomy.manager.CacheManager;
+import fr.ward.weconomy.manager.DiscordManager;
 import fr.ward.weconomy.manager.EconomyManager;
 import fr.ward.weconomy.placeholder.SomeExpansion;
 import fr.ward.weconomy.utils.MineLogger;
@@ -25,9 +26,11 @@ public class WEconomy extends JavaPlugin {
     private static WEconomy INSTANCE;
 
     private final String prefix = getConfig().getString("prefixName");
+    private final String money = getConfig().getString("moneyName");
 
     private EconomyManager economyManager;
     private CacheManager cacheManager;
+    private DiscordManager discordManager;
     private Database database;
 
     public WEconomy() {
@@ -57,12 +60,15 @@ public class WEconomy extends JavaPlugin {
 
         this.cacheManager = new CacheManager();
         this.economyManager = new EconomyManager();
+        this.discordManager = new DiscordManager();
 
         setupEconomy();
 
         setupDatabase();
 
         setupPlaceHolder();
+
+        setupDiscordBot();
 
         final PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new PlayerJoinLeaveListener(), this);
@@ -96,11 +102,22 @@ public class WEconomy extends JavaPlugin {
         }
     }
 
+    private void setupDiscordBot() {
+        this.discordManager.load();
+    }
+
     public String getPrefix() {
         if(prefix != null) {
             return ChatColor.translateAlternateColorCodes('&', prefix);
         }
         return "§7[§6WEconomy§7]";
+    }
+
+    public String getMoney() {
+        if(money != null) {
+            return ChatColor.translateAlternateColorCodes('&', money);
+        }
+        return "$";
     }
 
     public EconomyManager getEconomy() {
@@ -109,6 +126,10 @@ public class WEconomy extends JavaPlugin {
 
     public CacheManager getCacheManager() {
         return cacheManager;
+    }
+
+    public DiscordManager getDiscordManager() {
+        return discordManager;
     }
 
     public Database getDatabase() {

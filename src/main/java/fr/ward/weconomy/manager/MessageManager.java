@@ -23,6 +23,7 @@ public enum MessageManager {
     BAL_TOP_NOT_FUNDS(WEconomy.getInstance().getConfig().getString("MessageBalTopNotFound")),
     NO_PERMISSION(WEconomy.getInstance().getConfig().getString("MessageNoPermission")),
     RESET_ALL(WEconomy.getInstance().getConfig().getString("MessageResetAll")),
+    BAD_SYNTAX(WEconomy.getInstance().getConfig().getString("MessageBadSyntax")),
     ;
 
     private final String message;
