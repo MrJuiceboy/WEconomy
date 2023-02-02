@@ -64,15 +64,12 @@ public class MySQL extends Database {
     }
 
     private String toURL(String host, int port, String dbName) {
-        final StringBuilder sb = new StringBuilder();
-
-        sb.append("jdbc:mysql://")
-                .append(host)
-                .append(":")
-                .append(port)
-                .append("/")
-                .append(dbName);
-        return sb.toString();
+        return "jdbc:mysql://" +
+                host +
+                ":" +
+                port +
+                "/" +
+                dbName;
     }
 
     @Override
