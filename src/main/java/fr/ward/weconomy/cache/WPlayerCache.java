@@ -5,7 +5,7 @@ import java.util.UUID;
 public class WPlayerCache {
 
     private final UUID uuid;
-    private final double money;
+    private double money;
 
     public WPlayerCache(UUID uuid, double money) {
         this.uuid = uuid;
@@ -27,4 +27,9 @@ public class WPlayerCache {
     /*
     SETTER
      */
+
+    public void setMoney(double money) {
+        this.money = money;
+    }
 }
+

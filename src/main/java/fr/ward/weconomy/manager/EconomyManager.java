@@ -1,6 +1,7 @@
 package fr.ward.weconomy.manager;
 
 import fr.ward.weconomy.WEconomy;
+import fr.ward.weconomy.cache.WPlayerCache;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
@@ -106,13 +107,29 @@ public class EconomyManager implements Economy {
     }
 
     @Override
-    public EconomyResponse withdrawPlayer(String s, double v) {
-        return null;
+    public EconomyResponse withdrawPlayer(String uuid, double amount) {
+        final WPlayerCache wPlayerCache = WEconomy.getInstance().getCacheManager().getPlayerCache(UUID.fromString(uuid));
+        final double currentMoney = wPlayerCache.getMoney();
+        if(currentMoney >= amount) {
+            wPlayerCache.setMoney(currentMoney - amount);
+            WEconomy.getInstance().getCacheManager().updatePlayerData(UUID.fromString(uuid));
+            return new EconomyResponse(amount, currentMoney, EconomyResponse.ResponseType.SUCCESS, "");
+        } else {
+            return new EconomyResponse(amount, currentMoney, EconomyResponse.ResponseType.FAILURE, "");
+        }
     }
 
     @Override
-    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double v) {
-        return null;
+    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
+        final WPlayerCache wPlayerCache = WEconomy.getInstance().getCacheManager().getPlayerCache(offlinePlayer.getUniqueId());
+        final double currentMoney = wPlayerCache.getMoney();
+        if(currentMoney >= amount) {
+            wPlayerCache.setMoney(currentMoney - amount);
+            WEconomy.getInstance().getCacheManager().updatePlayerData(offlinePlayer.getUniqueId());
+            return new EconomyResponse(amount, currentMoney, EconomyResponse.ResponseType.SUCCESS, "");
+        } else {
+            return new EconomyResponse(amount, currentMoney, EconomyResponse.ResponseType.FAILURE, "");
+        }
     }
 
     @Override
@@ -126,13 +143,19 @@ public class EconomyManager implements Economy {
     }
 
     @Override
-    public EconomyResponse depositPlayer(String s, double v) {
-        return null;
+    public EconomyResponse depositPlayer(String uuid, double amount) {
+        final WPlayerCache wPlayerCache = WEconomy.getInstance().getCacheManager().getPlayerCache(UUID.fromString(uuid));
+        final double currentAmount = wPlayerCache.getMoney();
+        wPlayerCache.setMoney(currentAmount + amount);
+        WEconomy.getInstance().getCacheManager().updatePlayerData(UUID.fromString(uuid));
+        return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");
     }
 
     @Override
-    public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double v) {
-        return null;
+    public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
+        final double currentAmount = WEconomy.getInstance().getDatabase().getMoney(offlinePlayer.getUniqueId());
+        WEconomy.getInstance().getCacheManager().updatePlayerData(offlinePlayer.getUniqueId());
+        return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");
     }
 
     @Override

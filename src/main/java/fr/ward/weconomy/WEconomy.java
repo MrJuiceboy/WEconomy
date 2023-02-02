@@ -8,8 +8,10 @@ import fr.ward.weconomy.database.type.SQLite;
 import fr.ward.weconomy.listeners.PlayerJoinLeaveListener;
 import fr.ward.weconomy.manager.CacheManager;
 import fr.ward.weconomy.manager.EconomyManager;
+import fr.ward.weconomy.placeholder.SomeExpansion;
 import fr.ward.weconomy.utils.MineLogger;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
@@ -21,6 +23,8 @@ import java.util.Objects;
 public class WEconomy extends JavaPlugin {
 
     private static WEconomy INSTANCE;
+
+    private final String prefix = getConfig().getString("prefixName");
 
     private EconomyManager economyManager;
     private CacheManager cacheManager;
@@ -52,18 +56,13 @@ public class WEconomy extends JavaPlugin {
         saveConfig();
 
         this.cacheManager = new CacheManager();
+        this.economyManager = new EconomyManager();
 
-        if(!setupEconomy()){
-            MineLogger.error("Economy could not be registered... Vault is missing!");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
+        setupEconomy();
 
-        try {
-            initDatabaseType(getDatabaseType());
-        } catch (SQLException e) {
-            MineLogger.error("" + e);
-        }
+        setupDatabase();
+
+        setupPlaceHolder();
 
         final PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new PlayerJoinLeaveListener(), this);
@@ -73,13 +72,35 @@ public class WEconomy extends JavaPlugin {
         super.onEnable();
     }
 
-    private boolean setupEconomy() {
+    private void setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
+            MineLogger.error("Economy could not be registered... Vault is missing!");
+            getServer().getPluginManager().disablePlugin(this);
         }
-        getServer().getServicesManager().register(Economy.class, economyManager, this, ServicePriority.High);
+        getServer().getServicesManager().register(Economy.class, this.economyManager, this, ServicePriority.High);
         MineLogger.info("Economy has ben registered!");
-        return true;
+    }
+
+    private void setupDatabase() {
+        try {
+            initDatabaseType(getDatabaseType());
+        } catch (SQLException e) {
+            MineLogger.error("" + e);
+            getServer().getPluginManager().disablePlugin(this);
+        }
+    }
+
+    private void setupPlaceHolder() {
+        if (getServer().getPluginManager().getPlugin("PlaceHolderAPI") != null) {
+            new SomeExpansion().register();
+        }
+    }
+
+    public String getPrefix() {
+        if(prefix != null) {
+            return ChatColor.translateAlternateColorCodes('&', prefix);
+        }
+        return "§7[§6WEconomy§7]";
     }
 
     public EconomyManager getEconomy() {

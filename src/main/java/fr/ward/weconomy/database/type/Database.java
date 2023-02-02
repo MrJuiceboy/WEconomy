@@ -2,14 +2,19 @@ package fr.ward.weconomy.database.type;
 
 import fr.ward.weconomy.WEconomy;
 import fr.ward.weconomy.database.DatabaseType;
+import fr.ward.weconomy.manager.MessageManager;
 import fr.ward.weconomy.utils.MineLogger;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public abstract class Database {
 
@@ -43,7 +48,7 @@ public abstract class Database {
         }
     }
 
-    public Integer getMoney(UUID uuid) {
+    public synchronized Integer getMoney(UUID uuid) {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs;
@@ -70,6 +75,91 @@ public abstract class Database {
             }
         }
         return 0;
+    }
+
+    public synchronized void setMoney(UUID uuid, double money) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = getSQLConnection();
+            ps = conn.prepareStatement("REPLACE INTO " + tableName + " (UUID,money) VALUES(?,?)");
+            ps.setString(1, uuid.toString());
+            ps.setFloat(2, (float) money);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            MineLogger.error("" + ex);
+        } finally {
+            try {
+                if (ps != null)
+                    ps.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException ex) {
+                MineLogger.error("" + ex);
+            }
+        }
+    }
+
+    public synchronized String getTop(int place) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        String[] TopPlayer = new String[2];
+        int i = 1;
+        try {
+            conn = getSQLConnection();
+            ps = conn.prepareStatement("SELECT * FROM " + tableName + " ORDER BY money DESC");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                if(i == place) {
+                    TopPlayer[0] = rs.getString("UUID");
+                    double money = rs.getFloat("money");
+                    TopPlayer[1] = Double.toString(money);
+                }
+                i++;
+            }
+
+            if(TopPlayer[0] != null) {
+                final Player player = Bukkit.getPlayer(UUID.fromString(TopPlayer[0]));
+                if(player != null) {
+                    return MessageManager.BAL_TOP.build(place, player.getName(), Double.parseDouble(TopPlayer[1]));
+                }
+            }
+            return MessageManager.BAL_TOP_NOT_FUNDS.build(place, null, 0);
+        } catch (SQLException ex) {
+            MineLogger.error("" + ex);
+        } finally {
+            try {
+                if (ps != null)
+                    ps.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException ex) {
+                MineLogger.error("" + ex);
+            }
+        }
+        return MessageManager.BAL_TOP_NOT_FUNDS.build(place, null, 0);
+    }
+
+    public void reset() {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = getSQLConnection();
+            ps = conn.prepareStatement("DELETE FROM " + tableName);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            MineLogger.error("" + ex);
+        } finally {
+            try {
+                if (ps != null)
+                    ps.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException ex) {
+                MineLogger.error("" + ex);
+            }
+        }
     }
 
     public synchronized void execute(String sql, Object... replacements) {

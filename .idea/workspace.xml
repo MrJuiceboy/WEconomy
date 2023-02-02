@@ -10,9 +10,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab91d30b-734f-491e-bffc-1fcc45d019f3" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/manager/MessageManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/placeholder/SomeExpansion.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dependency-reduced-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/dependency-reduced-pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/WEconomy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/WEconomy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/cache/WPlayerCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/cache/WPlayerCache.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/command/WEconomyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/command/WEconomyCommand.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/database/type/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/database/type/Database.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/database/type/MySQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/database/type/MySQL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/listeners/PlayerJoinLeaveListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/listeners/PlayerJoinLeaveListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/manager/CacheManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/manager/CacheManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/manager/EconomyManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/manager/EconomyManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,8 +32,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Enum" />
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
