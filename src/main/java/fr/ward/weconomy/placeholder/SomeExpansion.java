@@ -3,6 +3,7 @@ package fr.ward.weconomy.placeholder;
 import fr.ward.weconomy.WEconomy;
 import fr.ward.weconomy.database.type.Database;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +46,7 @@ public class SomeExpansion extends PlaceholderExpansion {
             case "top_3" -> database.getTop(3);
             case "top_4" -> database.getTop(4);
             case "top_5" -> database.getTop(5);
-            default -> null;
+            default -> ChatColor.RED + "Error : PlaceHolderAPI";
         };
     }
 }

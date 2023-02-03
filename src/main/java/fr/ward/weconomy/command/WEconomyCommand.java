@@ -26,6 +26,12 @@ public class WEconomyCommand implements CommandExecutor {
             }
 
             if(args.length == 1) {
+                if(args[0].equals("credit") || args[0].equals("dev") || args[0].equals("plugin")) {
+                    player.sendMessage(WEconomy.getInstance().getPrefix() + ChatColor.GRAY + " Created by " + ChatColor.AQUA +  "Ward" + ChatColor.GRAY + " with " + ChatColor.DARK_RED + "❤" + ChatColor.DARK_GRAY + " (Plugin Free)");
+                    player.sendMessage(ChatColor.BLUE + "[Discord] " + ChatColor.GRAY + "https://discord.gg/cJF48s3SBJ" + ChatColor.GRAY + " (" + ChatColor.YELLOW + "Click" + ChatColor.GRAY + ")");
+                    return true;
+                }
+
                 if(args[0].equals("rank") || args[0].equals("top") || args[0].equals("baltop") || args[0].equals("balancetop")) {
                     top(player);
                     return true;
