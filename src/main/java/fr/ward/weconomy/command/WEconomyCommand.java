@@ -165,9 +165,9 @@ public class WEconomyCommand implements CommandExecutor {
             player.sendMessage(MessageManager.PLAYER_NOT_FOUND.build(player));
         } else {
             WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, player.getName(), receiver.getName(), integer);
+            economyManager.withdrawPlayer(receiver.getUniqueId().toString(), integer);
             player.sendMessage(MessageManager.SEND_REMOVE.build(player, receiver, integer));
             receiver.sendMessage(MessageManager.RECEIVER_REMOVE.build(player, receiver, integer));
-            economyManager.withdrawPlayer(receiver.getUniqueId().toString(), integer);
         }
     }
 

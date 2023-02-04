@@ -28,34 +28,36 @@ public class DiscordManager {
     }
 
     public void sendMessage(DiscordMessage discordMessage, String sender, String receiver, double amount) {
-        final String guildID = WEconomy.getInstance().getConfig().getString("discordServerID");
-        final String canalID = WEconomy.getInstance().getConfig().getString("discordCanalID");
+        if(hasEnabled()) {
+            final String guildID = WEconomy.getInstance().getConfig().getString("discordServerID");
+            final String canalID = WEconomy.getInstance().getConfig().getString("discordCanalID");
 
-        if(guildID == null) {
-            MineLogger.error("[Discord Bot] Discord server id not found in the config.yml");
-            return;
-        }
+            if (guildID == null) {
+                MineLogger.error("[Discord Bot] Discord server id not found in the config.yml");
+                return;
+            }
 
-        final Guild guild = jda.getGuildById(guildID);
+            final Guild guild = jda.getGuildById(guildID);
 
-        if(guild == null) {
-            MineLogger.error("[Discord Bot] Discord server id not found with this id " + guildID);
-            return;
-        }
+            if (guild == null) {
+                MineLogger.error("[Discord Bot] Discord server id not found with this id " + guildID);
+                return;
+            }
 
-        if(canalID == null) {
-            MineLogger.error("[Discord Bot] canal id not found in the config.yml");
-            return;
-        }
+            if (canalID == null) {
+                MineLogger.error("[Discord Bot] canal id not found in the config.yml");
+                return;
+            }
 
-        final TextChannel channel = guild.getTextChannelById(canalID);
+            final TextChannel channel = guild.getTextChannelById(canalID);
 
-        if (channel != null && channel.isSynced()) {
-            final EmbedBuilder embedBuilder = discordMessage.buildEmbed(sender, receiver, (int) amount);
-            channel.sendMessageEmbeds(embedBuilder.build()).queue();
-            embedBuilder.clear();
-        } else {
-            MineLogger.error("[Discord Bot] Canal id not found in the server with this id " + canalID);
+            if (channel != null && channel.isSynced()) {
+                final EmbedBuilder embedBuilder = discordMessage.buildEmbed(sender, receiver, (int) amount);
+                channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                embedBuilder.clear();
+            } else {
+                MineLogger.error("[Discord Bot] Canal id not found in the server with this id " + canalID);
+            }
         }
     }
 

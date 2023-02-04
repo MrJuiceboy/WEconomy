@@ -25,6 +25,14 @@ public class WPlayerCache {
     }
 
     /*
+    ADDING
+     */
+
+    public void addMoney(double money) {
+        this.money = getMoney() + money;
+    }
+
+    /*
     SETTER
      */
 
