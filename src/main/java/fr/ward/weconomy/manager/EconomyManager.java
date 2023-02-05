@@ -1,7 +1,6 @@
 package fr.ward.weconomy.manager;
 
 import fr.ward.weconomy.WEconomy;
-import fr.ward.weconomy.cache.WPlayerCache;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
@@ -68,12 +67,12 @@ public class EconomyManager implements Economy {
 
     @Override
     public double getBalance(String uuid) {
-        return WEconomy.getInstance().getCacheManager().getPlayerCache(UUID.fromString(uuid)).getMoney();
+        return WEconomy.getInstance().getCacheManager().getBalance(UUID.fromString(uuid));
     }
 
     @Override
     public double getBalance(OfflinePlayer offlinePlayer) {
-        return 0;
+        return WEconomy.getInstance().getCacheManager().getBalance(offlinePlayer);
     }
 
     @Override
@@ -108,28 +107,12 @@ public class EconomyManager implements Economy {
 
     @Override
     public EconomyResponse withdrawPlayer(String uuid, double amount) {
-        final WPlayerCache wPlayerCache = WEconomy.getInstance().getCacheManager().getPlayerCache(UUID.fromString(uuid));
-        final double currentMoney = wPlayerCache.getMoney();
-        if(currentMoney >= amount) {
-            wPlayerCache.setMoney(currentMoney - amount);
-            WEconomy.getInstance().getCacheManager().updatePlayerData(UUID.fromString(uuid));
-            return new EconomyResponse(amount, currentMoney, EconomyResponse.ResponseType.SUCCESS, "");
-        } else {
-            return new EconomyResponse(amount, currentMoney, EconomyResponse.ResponseType.FAILURE, "");
-        }
+        return WEconomy.getInstance().getCacheManager().withdrawPlayer(UUID.fromString(uuid), (float) amount);
     }
 
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
-        final WPlayerCache wPlayerCache = WEconomy.getInstance().getCacheManager().getPlayerCache(offlinePlayer.getUniqueId());
-        final double currentMoney = wPlayerCache.getMoney();
-        if(currentMoney >= amount) {
-            wPlayerCache.setMoney(currentMoney - amount);
-            WEconomy.getInstance().getCacheManager().updatePlayerData(offlinePlayer.getUniqueId());
-            return new EconomyResponse(amount, currentMoney, EconomyResponse.ResponseType.SUCCESS, "");
-        } else {
-            return new EconomyResponse(amount, currentMoney, EconomyResponse.ResponseType.FAILURE, "");
-        }
+        return WEconomy.getInstance().getCacheManager().withdrawPlayer(offlinePlayer, (float) amount);
     }
 
     @Override
@@ -144,18 +127,12 @@ public class EconomyManager implements Economy {
 
     @Override
     public EconomyResponse depositPlayer(String uuid, double amount) {
-        final WPlayerCache wPlayerCache = WEconomy.getInstance().getCacheManager().getPlayerCache(UUID.fromString(uuid));
-        final double currentAmount = wPlayerCache.getMoney();
-        wPlayerCache.setMoney(currentAmount + amount);
-        WEconomy.getInstance().getCacheManager().updatePlayerData(UUID.fromString(uuid));
-        return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");
+        return WEconomy.getInstance().getCacheManager().depositPlayer(UUID.fromString(uuid), (float) amount);
     }
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
-        final double currentAmount = WEconomy.getInstance().getDatabase().getMoney(offlinePlayer.getUniqueId());
-        WEconomy.getInstance().getCacheManager().updatePlayerData(offlinePlayer.getUniqueId());
-        return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");
+        return WEconomy.getInstance().getCacheManager().depositPlayer(offlinePlayer, (float) amount);
     }
 
     @Override

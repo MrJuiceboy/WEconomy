@@ -32,6 +32,10 @@ public enum MessageManager {
         this.message = message;
     }
 
+    public String build() {
+        return ChatColor.translateAlternateColorCodes('&', this.message);
+    }
+
     public String build(Player player) {
         final String message = WEconomy.getInstance().getPrefix() + " " + ChatColor.translateAlternateColorCodes('&', this.message);
         if(hasPlaceHolderAPI()) {
@@ -43,9 +47,14 @@ public enum MessageManager {
     public String build(Player player, Player receiver, double amount) {
         final String message = WEconomy.getInstance().getPrefix() + " " + ChatColor.translateAlternateColorCodes('&', this.message);
         if(hasPlaceHolderAPI()) {
-            return PlaceholderAPI.setPlaceholders(player, replace(player, receiver, amount, message));
+            return PlaceholderAPI.setPlaceholders(player, replace(player.getName(), receiver.getName(), amount, message));
         }
-        return replace(player, receiver, amount, message);
+        return replace(player.getName(), receiver.getName(), amount, message);
+    }
+
+    public String build(String sender, String receiver, double amount) {
+        final String message = WEconomy.getInstance().getPrefix() + " " + ChatColor.translateAlternateColorCodes('&', this.message);
+        return replace(sender, receiver, amount, message);
     }
 
     public String build(int place, String playerName, double amount) {
@@ -61,15 +70,15 @@ public enum MessageManager {
         }
     }
 
-    private String replace(Player player, Player receiver, double amount, String message) {
+    private String replace(String sender, String receiver, double amount, String message) {
         switch (this) {
             case SEND_PAY, SEND_GIVE, SEND_REMOVE: {
-                final String doubleReplace = message.replace("%receiver%", receiver.getName());
+                final String doubleReplace = message.replace("%receiver%", receiver);
                 return doubleReplace.replace("%amount%", String.valueOf(amount));
             }
 
             case RECEIVER_PAY, RECEIVER_GIVE, RECEIVER_REMOVE: {
-                final String doubleReplace = message.replace("%player%", player.getName());
+                final String doubleReplace = message.replace("%player%", sender);
                 return doubleReplace.replace("%amount%", String.valueOf(amount));
             }
             default: return message;

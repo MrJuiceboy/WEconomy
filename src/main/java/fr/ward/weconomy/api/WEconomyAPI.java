@@ -5,24 +5,35 @@ import fr.ward.weconomy.cache.WPlayerCache;
 import fr.ward.weconomy.discord.DiscordMessage;
 import fr.ward.weconomy.manager.EconomyManager;
 import fr.ward.weconomy.manager.MessageManager;
+import fr.ward.weconomy.utils.MineLogger;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
-public abstract class WEconomyAPI {
+public final class WEconomyAPI {
 
-    protected WEconomyAPI() {}
+    private static WEconomy wEconomy;
 
-    public WPlayerCache getPlayerCache(UUID uuid) {
-        return WEconomy.getInstance().getCacheManager().getPlayerCache(uuid);
+    @Deprecated
+    public static void test(String str) {
+        MineLogger.info(str);
     }
 
-    public void updatePlayerData(UUID uuid) {
-        WEconomy.getInstance().getCacheManager().updatePlayerData(uuid);
+    @Nullable
+    @Deprecated
+    public static WPlayerCache getPlayerCache(UUID uuid) {
+        return wEconomy.getCacheManager().getPlayerCache(uuid);
     }
 
-    public void pay(Player paying, Player receiving, double amount) {
-        final EconomyManager economyManager = WEconomy.getInstance().getEconomy();
+    @Deprecated
+    public static void updatePlayerData(UUID uuid) {
+        wEconomy.getCacheManager().updatePlayerData(uuid);
+    }
+
+    @Deprecated
+    public static void pay(Player paying, Player receiving, double amount) {
+        final EconomyManager economyManager = wEconomy.getEconomy();
 
         if(amount > economyManager.getBalance(paying.getUniqueId().toString())) {
             paying.sendMessage(MessageManager.INSUFFICIENT_FUNDS.build(paying));
@@ -37,7 +48,7 @@ public abstract class WEconomyAPI {
         if(receiving == null){
             paying.sendMessage(MessageManager.PLAYER_NOT_FOUND.build(paying));
         } else {
-            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.TRANSACTION, paying.getName(), receiving.getName(), amount);
+            wEconomy.getDiscordManager().sendMessage(DiscordMessage.TRANSACTION, paying.getName(), receiving.getName(), amount);
             economyManager.withdrawPlayer(paying.getUniqueId().toString(), amount);
             economyManager.depositPlayer(receiving.getUniqueId().toString(), amount);
             paying.sendMessage(MessageManager.SEND_PAY.build(paying, receiving, amount));
@@ -45,15 +56,17 @@ public abstract class WEconomyAPI {
         }
     }
 
-    public void addingMoney(UUID uuid, double amount) {
-        final EconomyManager economyManager = WEconomy.getInstance().getEconomy();
-        WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.GIVE, "WEconomyAPI", uuid.toString(), amount);
+    @Deprecated
+    public static void addingMoney(UUID uuid, double amount) {
+        final EconomyManager economyManager = wEconomy.getEconomy();
+        wEconomy.getDiscordManager().sendMessage(DiscordMessage.GIVE, "WEconomyAPI", uuid.toString(), amount);
         economyManager.depositPlayer(uuid.toString(), amount);
     }
 
-    public void removeMoney(UUID uuid, double amount) {
-        final EconomyManager economyManager = WEconomy.getInstance().getEconomy();
-        WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, "WEconomyAPI", uuid.toString(), amount);
+    @Deprecated
+    public static void removeMoney(UUID uuid, double amount) {
+        final EconomyManager economyManager = wEconomy.getEconomy();
+        wEconomy.getDiscordManager().sendMessage(DiscordMessage.REMOVE, "WEconomyAPI", uuid.toString(), amount);
         economyManager.withdrawPlayer(uuid.toString(), amount);
     }
 }

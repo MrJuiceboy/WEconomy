@@ -5,9 +5,9 @@ import java.util.UUID;
 public class WPlayerCache {
 
     private final UUID uuid;
-    private double money;
+    private float money;
 
-    public WPlayerCache(UUID uuid, double money) {
+    public WPlayerCache(UUID uuid, float money) {
         this.uuid = uuid;
         this.money = money;
     }
@@ -20,15 +20,15 @@ public class WPlayerCache {
         return uuid;
     }
 
-    public double getMoney() {
-        return money;
+    public float getMoney() {
+        return (float) (Math.round(money * 100.0) / 100.0);
     }
 
     /*
     ADDING
      */
 
-    public void addMoney(double money) {
+    public void addMoney(float money) {
         this.money = getMoney() + money;
     }
 
@@ -36,7 +36,7 @@ public class WPlayerCache {
     SETTER
      */
 
-    public void setMoney(double money) {
+    public void setMoney(float money) {
         this.money = money;
     }
 }

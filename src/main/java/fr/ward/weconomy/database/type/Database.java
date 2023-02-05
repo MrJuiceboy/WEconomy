@@ -5,7 +5,6 @@ import fr.ward.weconomy.database.DatabaseType;
 import fr.ward.weconomy.manager.MessageManager;
 import fr.ward.weconomy.utils.MineLogger;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -14,7 +13,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
-import java.util.logging.Level;
 
 public abstract class Database {
 
@@ -48,7 +46,7 @@ public abstract class Database {
         }
     }
 
-    public synchronized Integer getMoney(UUID uuid) {
+    public synchronized float getMoney(UUID uuid) {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs;
@@ -59,7 +57,7 @@ public abstract class Database {
             rs = ps.executeQuery();
             while(rs.next()){
                 if(rs.getString("UUID").equalsIgnoreCase(uuid.toString())){
-                    return rs.getInt("money");
+                    return (float) (Math.round(rs.getFloat("money") * 100.0) / 100.0);
                 }
             }
         } catch (SQLException ex) {
@@ -77,14 +75,14 @@ public abstract class Database {
         return 0;
     }
 
-    public synchronized void setMoney(UUID uuid, double money) {
+    public synchronized void setMoney(UUID uuid, float money) {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
             conn = getSQLConnection();
             ps = conn.prepareStatement("REPLACE INTO " + tableName + " (UUID,money) VALUES(?,?)");
             ps.setString(1, uuid.toString());
-            ps.setFloat(2, (float) money);
+            ps.setFloat(2, money);
             ps.executeUpdate();
         } catch (SQLException ex) {
             MineLogger.error("" + ex);
@@ -122,7 +120,7 @@ public abstract class Database {
             if(TopPlayer[0] != null) {
                 final Player player = Bukkit.getPlayer(UUID.fromString(TopPlayer[0]));
                 if(player != null) {
-                    return MessageManager.BAL_TOP.build(place, player.getName(), Double.parseDouble(TopPlayer[1]));
+                    return MessageManager.BAL_TOP.build(place, player.getName(), (Math.round(Double.parseDouble(TopPlayer[1]) * 100.0) / 100.0));
                 }
             }
             return MessageManager.BAL_TOP_NOT_FUNDS.build(place, null, 0);

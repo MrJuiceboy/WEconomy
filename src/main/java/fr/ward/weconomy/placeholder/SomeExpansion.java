@@ -40,7 +40,7 @@ public class SomeExpansion extends PlaceholderExpansion {
         final Database database = WEconomy.getInstance().getDatabase();
 
         return switch (params) {
-            case "current" -> database.getMoney(player.getUniqueId()).toString();
+            case "current" -> String.valueOf(WEconomy.getInstance().getCacheManager().getBalance(player));
             case "top_1" -> database.getTop(1);
             case "top_2" -> database.getTop(2);
             case "top_3" -> database.getTop(3);

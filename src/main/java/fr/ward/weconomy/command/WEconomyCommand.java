@@ -7,11 +7,13 @@ import fr.ward.weconomy.discord.DiscordMessage;
 import fr.ward.weconomy.manager.CacheManager;
 import fr.ward.weconomy.manager.EconomyManager;
 import fr.ward.weconomy.manager.MessageManager;
+import fr.ward.weconomy.utils.MineLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,23 +54,47 @@ public class WEconomyCommand implements CommandExecutor {
 
             if(args.length == 3) {
                 if(args[0].equals("pay")) {
-                    payingPlayer(player, args[1], Integer.parseInt(args[2]));
+                    payingPlayer(player, args[1], Double.parseDouble(args[2]));
                     return true;
                 }
 
                 if(args[0].equals("give")) {
-                    givePlayer(player, args[1], Integer.parseInt(args[2]));
+                    givePlayer(player, args[1], Double.parseDouble(args[2]));
                     return true;
                 }
 
                 if(args[0].equals("remove")) {
-                    removePlayer(player, args[1], Integer.parseInt(args[2]));
+                    removePlayer(player, args[1], Double.parseDouble(args[2]));
                     return true;
                 }
             }
 
             player.sendMessage(WEconomy.getInstance().getPrefix() + MessageManager.BAD_SYNTAX.build(player));
             return false;
+        } else if (commandSender instanceof ConsoleCommandSender) {
+            if(args.length == 2) {
+                if(args[1].equals("all")) {
+                    reset();
+                    return true;
+                }
+
+                if(args[0].equals("reset")) {
+                    reset(args[1]);
+                    return true;
+                }
+            }
+
+            if(args.length == 3) {
+                if(args[0].equals("give")) {
+                    givePlayer(args[1], Double.parseDouble(args[2]));
+                    return true;
+                }
+
+                if(args[0].equals("remove")) {
+                    removePlayer(args[1], Double.parseDouble(args[2]));
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -85,7 +111,7 @@ public class WEconomyCommand implements CommandExecutor {
         }
     }
 
-    private void payingPlayer(Player player, String target, int integer) {
+    private void payingPlayer(Player player, String target, Double amount) {
         final EconomyManager economyManager = WEconomy.getInstance().getEconomy();
 
         if(checkPermission(player, "weconomy.pay")) {
@@ -93,12 +119,12 @@ public class WEconomyCommand implements CommandExecutor {
             return;
         }
 
-        if((double) integer < 0.0D){
+        if(amount < 0.0D){
             player.sendMessage(MessageManager.NEGATIVE_AMOUNT.build(player));
             return;
         }
 
-        if((double) integer > economyManager.getBalance(player.getUniqueId().toString())) {
+        if(amount > economyManager.getBalance(player.getUniqueId().toString())) {
             player.sendMessage(MessageManager.INSUFFICIENT_FUNDS.build(player));
             return;
         }
@@ -113,15 +139,15 @@ public class WEconomyCommand implements CommandExecutor {
         if(receiver == null){
             player.sendMessage(MessageManager.PLAYER_NOT_FOUND.build(player));
         } else {
-            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.TRANSACTION, player.getName(), receiver.getName(), integer);
-            economyManager.withdrawPlayer(player.getUniqueId().toString(), integer);
-            economyManager.depositPlayer(receiver.getUniqueId().toString(), integer);
-            player.sendMessage(MessageManager.SEND_PAY.build(player, receiver, integer));
-            receiver.sendMessage(MessageManager.RECEIVER_PAY.build(player, receiver, integer));
+            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.TRANSACTION, player.getName(), receiver.getName(), amount);
+            economyManager.withdrawPlayer(player.getUniqueId().toString(), amount);
+            economyManager.depositPlayer(receiver.getUniqueId().toString(), amount);
+            player.sendMessage(MessageManager.SEND_PAY.build(player, receiver, amount));
+            receiver.sendMessage(MessageManager.RECEIVER_PAY.build(player, receiver, amount));
         }
     }
 
-    private void givePlayer(Player player, String target, int integer) {
+    private void givePlayer(Player player, String target, Double amount) {
         final EconomyManager economyManager = WEconomy.getInstance().getEconomy();
 
         if(checkPermission(player, "weconomy.give")) {
@@ -129,7 +155,7 @@ public class WEconomyCommand implements CommandExecutor {
             return;
         }
 
-        if((double) integer < 0.0D){
+        if(amount < 0.0D){
             player.sendMessage(MessageManager.NEGATIVE_AMOUNT.build(player));
             return;
         }
@@ -139,14 +165,34 @@ public class WEconomyCommand implements CommandExecutor {
         if(receiver == null){
             player.sendMessage(MessageManager.PLAYER_NOT_FOUND.build(player));
         } else {
-            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.GIVE, player.getName(), receiver.getName(), integer);
-            economyManager.depositPlayer(receiver.getUniqueId().toString(), integer);
-            player.sendMessage(MessageManager.SEND_GIVE.build(player, receiver, integer));
-            receiver.sendMessage(MessageManager.RECEIVER_GIVE.build(player, receiver, integer));
+            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.GIVE, player.getName(), receiver.getName(), amount);
+            economyManager.depositPlayer(receiver.getUniqueId().toString(), amount);
+            player.sendMessage(MessageManager.SEND_GIVE.build(player, receiver, amount));
+            receiver.sendMessage(MessageManager.RECEIVER_GIVE.build(player, receiver, amount));
         }
     }
 
-    private void removePlayer(Player player, String target, int integer) {
+    private void givePlayer(String target, Double amount) {
+        final EconomyManager economyManager = WEconomy.getInstance().getEconomy();
+
+        if(amount < 0.0D){
+            MineLogger.warning(MessageManager.NEGATIVE_AMOUNT.build());
+            return;
+        }
+
+        final Player receiver = Bukkit.getPlayer(target);
+
+        if(receiver == null){
+            MineLogger.warning(MessageManager.PLAYER_NOT_FOUND.build());
+        } else {
+            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.GIVE, "[Console]", receiver.getName(), amount);
+            economyManager.depositPlayer(receiver.getUniqueId().toString(), amount);
+            MineLogger.info(MessageManager.SEND_GIVE.build("[Console]", target, amount));
+            receiver.sendMessage(MessageManager.RECEIVER_GIVE.build("[Console]", target, amount));
+        }
+    }
+
+    private void removePlayer(Player player, String target, Double amount) {
         final EconomyManager economyManager = WEconomy.getInstance().getEconomy();
 
         if(checkPermission(player, "weconomy.remove")) {
@@ -154,7 +200,7 @@ public class WEconomyCommand implements CommandExecutor {
             return;
         }
 
-        if((double) integer < 0.0D){
+        if(amount < 0.0D){
             player.sendMessage(MessageManager.NEGATIVE_AMOUNT.build(player));
             return;
         }
@@ -164,10 +210,30 @@ public class WEconomyCommand implements CommandExecutor {
         if(receiver == null){
             player.sendMessage(MessageManager.PLAYER_NOT_FOUND.build(player));
         } else {
-            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, player.getName(), receiver.getName(), integer);
-            economyManager.withdrawPlayer(receiver.getUniqueId().toString(), integer);
-            player.sendMessage(MessageManager.SEND_REMOVE.build(player, receiver, integer));
-            receiver.sendMessage(MessageManager.RECEIVER_REMOVE.build(player, receiver, integer));
+            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, player.getName(), receiver.getName(), amount);
+            economyManager.withdrawPlayer(receiver.getUniqueId().toString(), amount);
+            player.sendMessage(MessageManager.SEND_REMOVE.build(player, receiver, amount));
+            receiver.sendMessage(MessageManager.RECEIVER_REMOVE.build(player, receiver, amount));
+        }
+    }
+
+    private void removePlayer(String target, Double amount) {
+        final EconomyManager economyManager = WEconomy.getInstance().getEconomy();
+
+        if(amount < 0.0D){
+            MineLogger.warning(MessageManager.NEGATIVE_AMOUNT.build());
+            return;
+        }
+
+        final Player receiver = Bukkit.getPlayer(target);
+
+        if(receiver == null){
+            MineLogger.warning(MessageManager.PLAYER_NOT_FOUND.build());
+        } else {
+            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, "[Console]", receiver.getName(), amount);
+            economyManager.withdrawPlayer(receiver.getUniqueId().toString(), amount);
+            MineLogger.info(MessageManager.SEND_REMOVE.build("[Console]", target, amount));
+            receiver.sendMessage(MessageManager.RECEIVER_REMOVE.build("[Console]", target, amount));
         }
     }
 
@@ -189,6 +255,19 @@ public class WEconomyCommand implements CommandExecutor {
         player.sendMessage(MessageManager.RESET_ALL.build(player));
     }
 
+    private void reset() {
+        final CacheManager cacheManager = WEconomy.getInstance().getCacheManager();
+        final Database database = WEconomy.getInstance().getDatabase();
+
+        WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.RESET, "[CONSOLE]", null, 0);
+        cacheManager.getPlayerCaches().clear();
+        database.reset();
+        for(Player plz : Bukkit.getOnlinePlayers()) {
+            cacheManager.addPlayerCache(plz);
+        }
+        MineLogger.info(MessageManager.RESET_ALL.build());
+    }
+
     private void reset(Player player, String target) {
         final EconomyManager economyManager = WEconomy.getInstance().getEconomy();
 
@@ -207,6 +286,23 @@ public class WEconomyCommand implements CommandExecutor {
             WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, player.getName(), receiver.getName(), wPlayerCache.getMoney());
             player.sendMessage(MessageManager.SEND_REMOVE.build(player, receiver, wPlayerCache.getMoney()));
             receiver.sendMessage(MessageManager.RECEIVER_REMOVE.build(player, receiver, wPlayerCache.getMoney()));
+            economyManager.withdrawPlayer(receiver.getUniqueId().toString(), wPlayerCache.getMoney());
+        }
+    }
+
+    private void reset(String target) {
+        final EconomyManager economyManager = WEconomy.getInstance().getEconomy();
+
+        final Player receiver = Bukkit.getPlayer(target);
+
+        if(receiver == null){
+            MineLogger.warning(MessageManager.PLAYER_NOT_FOUND.build());
+        } else {
+            final WPlayerCache wPlayerCache = WEconomy.getInstance().getCacheManager().getPlayerCache(receiver.getUniqueId());
+
+            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, "[CONSOLE]", receiver.getName(), wPlayerCache.getMoney());
+            MineLogger.info(MessageManager.SEND_REMOVE.build("[CONSOLE]", target, wPlayerCache.getMoney()));
+            receiver.sendMessage(MessageManager.RECEIVER_REMOVE.build("[CONSOLE]", target, wPlayerCache.getMoney()));
             economyManager.withdrawPlayer(receiver.getUniqueId().toString(), wPlayerCache.getMoney());
         }
     }
