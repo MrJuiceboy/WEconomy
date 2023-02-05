@@ -19,7 +19,8 @@ public enum MessageManager {
     RECEIVER_GIVE(WEconomy.getInstance().getConfig().getString("MessageGiveReceive")),
     SEND_REMOVE(WEconomy.getInstance().getConfig().getString("MessageRemoveSend")),
     RECEIVER_REMOVE(WEconomy.getInstance().getConfig().getString("MessageRemoveReceive")),
-    BAL_TOP(WEconomy.getInstance().getConfig().getString("MessageBalTop")),
+    BAL_TOP_ONLINE(WEconomy.getInstance().getConfig().getString("MessageBalTopOnline")),
+    BAL_TOP_OFFLINE(WEconomy.getInstance().getConfig().getString("MessageBalTopOffline")),
     BAL_TOP_NOT_FUNDS(WEconomy.getInstance().getConfig().getString("MessageBalTopNotFound")),
     NO_PERMISSION(WEconomy.getInstance().getConfig().getString("MessageNoPermission")),
     RESET_ALL(WEconomy.getInstance().getConfig().getString("MessageResetAll")),
@@ -87,7 +88,7 @@ public enum MessageManager {
 
     private String replace(int place, String playerName, double amount, String message) {
         switch (this) {
-            case BAL_TOP : {
+            case BAL_TOP_ONLINE, BAL_TOP_OFFLINE : {
                 final String doubleReplace = message.replace("%rank%", String.valueOf(place));
                 final String tripleReplace = doubleReplace.replace("%player%", playerName);
                 return tripleReplace.replace("%amount%", String.valueOf(amount));

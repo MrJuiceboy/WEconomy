@@ -46,6 +46,11 @@ public class SomeExpansion extends PlaceholderExpansion {
             case "top_3" -> database.getTop(3);
             case "top_4" -> database.getTop(4);
             case "top_5" -> database.getTop(5);
+            case "top_6" -> database.getTop(6);
+            case "top_7" -> database.getTop(7);
+            case "top_8" -> database.getTop(8);
+            case "top_9" -> database.getTop(9);
+            case "top_10" -> database.getTop(10);
             default -> ChatColor.RED + "Error : PlaceHolderAPI";
         };
     }

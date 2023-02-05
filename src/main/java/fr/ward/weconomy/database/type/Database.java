@@ -118,9 +118,13 @@ public abstract class Database {
             }
 
             if(TopPlayer[0] != null) {
+                final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(TopPlayer[0]));
                 final Player player = Bukkit.getPlayer(UUID.fromString(TopPlayer[0]));
+                final double amount = Math.round(Double.parseDouble(TopPlayer[1]) * 100.0) / 100.0;
                 if(player != null) {
-                    return MessageManager.BAL_TOP.build(place, player.getName(), (Math.round(Double.parseDouble(TopPlayer[1]) * 100.0) / 100.0));
+                    return MessageManager.BAL_TOP_ONLINE.build(place, player.getName(), amount);
+                } else {
+                    return MessageManager.BAL_TOP_OFFLINE.build(place, offlinePlayer.getName(), amount);
                 }
             }
             return MessageManager.BAL_TOP_NOT_FUNDS.build(place, null, 0);
