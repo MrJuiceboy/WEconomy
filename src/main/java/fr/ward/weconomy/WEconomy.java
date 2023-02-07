@@ -6,6 +6,8 @@ import fr.ward.weconomy.listeners.PlayerJoinLeaveListener;
 import fr.ward.weconomy.manager.*;
 import fr.ward.weconomy.placeholder.SomeExpansion;
 import fr.ward.weconomy.utils.Metrics;
+import fr.ward.weconomy.utils.MineLogger;
+import fr.ward.weconomy.utils.MineUpdater;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -42,6 +44,8 @@ public class WEconomy extends JavaPlugin {
     @Override
     public void onEnable() {
         INSTANCE = this;
+
+        checker();
 
         getConfig().options().copyDefaults(true);
         saveConfig();
@@ -104,5 +108,16 @@ public class WEconomy extends JavaPlugin {
     @Override
     public void onDisable() {
         super.onDisable();
+    }
+
+    private void checker() {
+        new MineUpdater(this, 107785).getVersion(version -> {
+            if (this.getDescription().getVersion().equals(version)) {
+                MineLogger.info("There is not a new update available.");
+            } else {
+                MineLogger.warning("There is a new update available.");
+                MineLogger.warning("https://www.spigotmc.org/resources/✅-weconomy-the-economy-easy-solution-1-16-5.107785/");
+            }
+        });
     }
 }

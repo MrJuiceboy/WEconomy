@@ -21,7 +21,7 @@ public class CacheManager {
 
     public void addPlayerCache(Player player) {
         final UUID uuid = player.getUniqueId();
-        final Database database = WEconomy.getInstance().getDatabase();
+        final Database database = WEconomy.getInstance().getDatabaseManager().getDatabase();
         Bukkit.getScheduler().runTaskAsynchronously(WEconomy.getInstance(), () -> database.addIntoDatabase(player));
         final WPlayerCache wPlayerCache = new WPlayerCache(uuid, database.getMoney(uuid));
         WEconomy.getInstance().getCacheManager().getPlayerCaches().add(wPlayerCache);
@@ -38,7 +38,7 @@ public class CacheManager {
 
     public void updatePlayerData(UUID uuid) {
         final WPlayerCache wPlayerCache = getPlayerCache(uuid);
-        final Database database = WEconomy.getInstance().getDatabase();
+        final Database database = WEconomy.getInstance().getDatabaseManager().getDatabase();
         Bukkit.getScheduler().runTaskAsynchronously(WEconomy.getInstance(), () -> database.setMoney(uuid, wPlayerCache.getMoney()));
     }
 
@@ -47,7 +47,7 @@ public class CacheManager {
             final WPlayerCache wPlayerCache = getPlayerCache(offlinePlayer.getUniqueId());
             return (float) (Math.round(wPlayerCache.getMoney() * 100.0) / 100.0);
         } else if(offlinePlayer.hasPlayedBefore()) {
-            final Database database = WEconomy.getInstance().getDatabase();
+            final Database database = WEconomy.getInstance().getDatabaseManager().getDatabase();
             return (float) (Math.round(database.getMoney(offlinePlayer.getUniqueId()) * 100.0) / 100.0);
         } else {
             return 0;
@@ -61,7 +61,7 @@ public class CacheManager {
             final WPlayerCache wPlayerCache = getPlayerCache(uuid);
             return (float) (Math.round(wPlayerCache.getMoney() * 100.0) / 100.0);
         } else if(player != null && player.hasPlayedBefore()) {
-            final Database database = WEconomy.getInstance().getDatabase();
+            final Database database = WEconomy.getInstance().getDatabaseManager().getDatabase();
             return (float) (Math.round(database.getMoney(uuid) * 100.0) / 100.0);
         } else {
             return 0;
@@ -71,7 +71,7 @@ public class CacheManager {
     public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, float amount) {
         if(offlinePlayer.isOnline()) {
             final WPlayerCache wPlayerCache = getPlayerCache(offlinePlayer.getUniqueId());
-            final float currentAmount = WEconomy.getInstance().getDatabase().getMoney(offlinePlayer.getUniqueId());
+            final float currentAmount = WEconomy.getInstance().getDatabaseManager().getDatabase().getMoney(offlinePlayer.getUniqueId());
             if(currentAmount >= amount) {
                 wPlayerCache.setMoney(wPlayerCache.getMoney() - amount);
                 updatePlayerData(offlinePlayer.getUniqueId());
@@ -80,7 +80,7 @@ public class CacheManager {
                 return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.FAILURE, "");
             }
         } else if(offlinePlayer.hasPlayedBefore()) {
-            final Database database = WEconomy.getInstance().getDatabase();
+            final Database database = WEconomy.getInstance().getDatabaseManager().getDatabase();
             final float currentAmount = database.getMoney(offlinePlayer.getUniqueId());
             if(currentAmount >= amount) {
                 database.setMoney(offlinePlayer.getUniqueId(), currentAmount - amount);
@@ -98,7 +98,7 @@ public class CacheManager {
 
         if(player != null && player.isOnline()) {
             final WPlayerCache wPlayerCache = getPlayerCache(uuid);
-            final float currentAmount = WEconomy.getInstance().getDatabase().getMoney(uuid);
+            final float currentAmount = WEconomy.getInstance().getDatabaseManager().getDatabase().getMoney(uuid);
             if(currentAmount >= amount) {
                 wPlayerCache.setMoney(wPlayerCache.getMoney() - amount);
                 updatePlayerData(uuid);
@@ -107,7 +107,7 @@ public class CacheManager {
                 return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.FAILURE, "");
             }
         } else if(player != null && player.hasPlayedBefore()) {
-            final Database database = WEconomy.getInstance().getDatabase();
+            final Database database = WEconomy.getInstance().getDatabaseManager().getDatabase();
             final float currentAmount = database.getMoney(uuid);
             if(currentAmount >= amount) {
                 database.setMoney(uuid, currentAmount - amount);
@@ -123,12 +123,12 @@ public class CacheManager {
     public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, float amount) {
         if(offlinePlayer.isOnline()) {
             final WPlayerCache wPlayerCache = getPlayerCache(offlinePlayer.getUniqueId());
-            final float currentAmount = WEconomy.getInstance().getDatabase().getMoney(offlinePlayer.getUniqueId());
+            final float currentAmount = WEconomy.getInstance().getDatabaseManager().getDatabase().getMoney(offlinePlayer.getUniqueId());
             wPlayerCache.setMoney(wPlayerCache.getMoney() + amount);
             updatePlayerData(offlinePlayer.getUniqueId());
             return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");
         } else if(offlinePlayer.hasPlayedBefore()) {
-            final Database database = WEconomy.getInstance().getDatabase();
+            final Database database = WEconomy.getInstance().getDatabaseManager().getDatabase();
             final float currentAmount = database.getMoney(offlinePlayer.getUniqueId());
             database.setMoney(offlinePlayer.getUniqueId(), currentAmount + amount);
             return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");
@@ -142,12 +142,12 @@ public class CacheManager {
 
         if(player != null && player.isOnline()) {
             final WPlayerCache wPlayerCache = getPlayerCache(uuid);
-            final float currentAmount = WEconomy.getInstance().getDatabase().getMoney(uuid);
+            final float currentAmount = WEconomy.getInstance().getDatabaseManager().getDatabase().getMoney(uuid);
             wPlayerCache.setMoney(wPlayerCache.getMoney() + amount);
             updatePlayerData(uuid);
             return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");
         } else if(player != null && player.hasPlayedBefore()) {
-            final Database database = WEconomy.getInstance().getDatabase();
+            final Database database = WEconomy.getInstance().getDatabaseManager().getDatabase();
             final float currentAmount = database.getMoney(uuid);
             database.setMoney(uuid, currentAmount + amount);
             return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");

@@ -1,6 +1,5 @@
 package fr.ward.weconomy.discord;
 
-import fr.ward.weconomy.WEconomy;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.MarkdownUtil;
 
@@ -30,7 +29,7 @@ public enum DiscordMessage {
         embedBuilder.setTitle(MarkdownUtil.bold(this.title));
 
         if(receiver != null) {
-            embedBuilder.addField(receiver, this.field + amount + " " + WEconomy.getInstance().getMoney(), true);
+            embedBuilder.addField(receiver, this.field + amount, true);
         }
 
         embedBuilder.setFooter("Send by " + sender);

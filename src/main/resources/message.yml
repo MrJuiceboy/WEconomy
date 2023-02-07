@@ -18,3 +18,18 @@ messages:
   noPermission: '%prefix% &ccYou do not have permission to access &f%permission%'
   reload: '%prefix% &aYou have successfully reloaded the configuration!'
   unknownCommand: '%prefix% &cUnknown command, please use /eco help'
+  helpAdmin:
+    - ''
+    - '&6/mc help &7- show help messages.'
+    - '&6/mc notify on &7- toggle receiving notification.'
+    - '&6/mc notify off &7- toggle receiving notification.'
+    - ''
+    - '&6&lAdmin Commands:'
+    - '&6/mc reload &7- reload the configuration!'
+    - ''
+  help:
+    - ''
+    - '&6/mc help &7- show help messages.'
+    - '&6/mc notify on &7- toggle receiving notification.'
+    - '&6/mc notify off &7- toggle receiving notification.'
+    - ''

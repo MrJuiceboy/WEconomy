@@ -37,7 +37,7 @@ public class SomeExpansion extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
-        final Database database = WEconomy.getInstance().getDatabase();
+        final Database database = WEconomy.getInstance().getDatabaseManager().getDatabase();
 
         return switch (params) {
             case "current" -> String.valueOf(WEconomy.getInstance().getCacheManager().getBalance(player));

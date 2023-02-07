@@ -72,7 +72,7 @@ public class WEconomyCommand implements CommandExecutor {
             }
 
             MineUtils.sendMessage(player, MessageManager.UNKNOWN_COMMAND.toString());
-            return false;
+            return true;
         } else if (commandSender instanceof ConsoleCommandSender) {
             if(args.length == 2) {
                 if(args[1].equals("all")) {
