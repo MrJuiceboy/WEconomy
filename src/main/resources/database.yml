@@ -1,0 +1,11 @@
+# in Type SQLite or MySQL
+database:
+  Type: SQLite
+  databaseName: WEconomy
+  databaseTable: WEconomy_data
+
+MySQL:
+  databaseHost:
+  databaseUser:
+  databasePass:
+  databasePort: 3306

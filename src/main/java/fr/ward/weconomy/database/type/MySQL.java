@@ -3,6 +3,7 @@ package fr.ward.weconomy.database.type;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import fr.ward.weconomy.WEconomy;
+import fr.ward.weconomy.config.ConfigType;
 import fr.ward.weconomy.utils.MineLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,11 +17,8 @@ public class MySQL extends Database {
 
     private HikariDataSource hikariDataSource;
 
-    private final String tableName = WEconomy.getInstance().getConfig().getString("databaseTable");
-
-    public MySQL(WEconomy wEconomy) {
-        super(wEconomy);
-    }
+    private final String dbName = ConfigType.DATABASE.getGeneratedYML().getConfig().getString("database.databaseName");
+    private final String tableName = ConfigType.DATABASE.getGeneratedYML().getConfig().getString("database.databaseTable");
 
     public String MySQLCreateTokensTable = "CREATE TABLE IF NOT EXISTS " + tableName + " (" +
             "`UUID` varchar(36) NOT NULL UNIQUE," +
@@ -38,18 +36,17 @@ public class MySQL extends Database {
 
     private void setupHikariCP() {
         final HikariConfig hikariConfig = new HikariConfig();
-        final FileConfiguration fileConfiguration = WEconomy.getInstance().getConfig();
+        final FileConfiguration config = ConfigType.DATABASE.getGeneratedYML().getConfig();
 
-        final String databaseHost = fileConfiguration.getString("databaseHost");
-        final int databasePort = fileConfiguration.getInt("databasePort");
-        final String databaseName = fileConfiguration.getString("databaseName");
-        final String databaseUser = fileConfiguration.getString("databaseUser");
-        final String databasePass = fileConfiguration.getString("databasePass");
+        final String databaseHost = config.getString("MySQL.databaseHost");
+        final int databasePort = config.getInt("MySQL.databasePort");
+        final String databaseUser = config.getString("MySQL.databaseUser");
+        final String databasePass = config.getString("MySQL.databasePass");
 
         final int maximumPoolSize = Runtime.getRuntime().availableProcessors() * 2 + 1;
 
-        hikariConfig.setPoolName(WEconomy.getInstance().getName() + "-" + databaseName);
-        hikariConfig.setJdbcUrl(toURL(databaseHost, databasePort, databaseName));
+        hikariConfig.setPoolName(WEconomy.getInstance().getName() + "-" + dbName);
+        hikariConfig.setJdbcUrl(toURL(databaseHost, databasePort, dbName));
         hikariConfig.setConnectionTestQuery("SELECT 1");
         hikariConfig.setUsername(databaseUser);
         hikariConfig.setPassword(databasePass);

@@ -1,6 +1,7 @@
 package fr.ward.weconomy.database.type;
 
 import fr.ward.weconomy.WEconomy;
+import fr.ward.weconomy.config.ConfigType;
 import fr.ward.weconomy.utils.MineLogger;
 
 import java.io.File;
@@ -12,12 +13,8 @@ import java.sql.Statement;
 
 public class SQLite extends Database {
 
-    private final String dbName = WEconomy.getInstance().getConfig().getString("databaseName");
-    private final String tableName = WEconomy.getInstance().getConfig().getString("databaseTable");
-
-    public SQLite(WEconomy wEconomy){
-        super(wEconomy);
-    }
+    private final String dbName = ConfigType.DATABASE.getGeneratedYML().getConfig().getString("database.databaseName");
+    private final String tableName = ConfigType.DATABASE.getGeneratedYML().getConfig().getString("database.databaseTable");
 
     public String SQLiteCreateTokensTable = "CREATE TABLE IF NOT EXISTS " + tableName + " (" +
             "`UUID` varchar(36) NOT NULL UNIQUE," +

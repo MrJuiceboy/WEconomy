@@ -1,105 +1,43 @@
 package fr.ward.weconomy.manager;
 
-import fr.ward.weconomy.WEconomy;
-import fr.ward.weconomy.cache.WPlayerCache;
-import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.configuration.file.FileConfiguration;
 
 public enum MessageManager {
 
-    GET_MONEY(WEconomy.getInstance().getConfig().getString("MessageGetMoney")),
-    NEGATIVE_AMOUNT(WEconomy.getInstance().getConfig().getString("MessageNegativeAmount")),
-    PLAYER_NOT_FOUND(WEconomy.getInstance().getConfig().getString("MessagePlayerNotFound")),
-    INSUFFICIENT_FUNDS(WEconomy.getInstance().getConfig().getString("MessageInsufficientFunds")),
-    PAY_YOURSELF(WEconomy.getInstance().getConfig().getString("MessagePayYourself")),
-    SEND_PAY(WEconomy.getInstance().getConfig().getString("MessagePaySend")),
-    RECEIVER_PAY(WEconomy.getInstance().getConfig().getString("MessagePayReceive")),
-    SEND_GIVE(WEconomy.getInstance().getConfig().getString("MessageGiveSend")),
-    RECEIVER_GIVE(WEconomy.getInstance().getConfig().getString("MessageGiveReceive")),
-    SEND_REMOVE(WEconomy.getInstance().getConfig().getString("MessageRemoveSend")),
-    RECEIVER_REMOVE(WEconomy.getInstance().getConfig().getString("MessageRemoveReceive")),
-    BAL_TOP_ONLINE(WEconomy.getInstance().getConfig().getString("MessageBalTopOnline")),
-    BAL_TOP_OFFLINE(WEconomy.getInstance().getConfig().getString("MessageBalTopOffline")),
-    BAL_TOP_NOT_FUNDS(WEconomy.getInstance().getConfig().getString("MessageBalTopNotFound")),
-    NO_PERMISSION(WEconomy.getInstance().getConfig().getString("MessageNoPermission")),
-    RESET_ALL(WEconomy.getInstance().getConfig().getString("MessageResetAll")),
-    BAD_SYNTAX(WEconomy.getInstance().getConfig().getString("MessageBadSyntax")),
+    PREFIX("messages.prefix"),
+    GET_MONEY("messages.getMoney"),
+    NEGATIVE_AMOUNT("messages.negativeAmount"),
+    PLAYER_NOT_FOUND("messages.playerNotFound"),
+    INSUFFICIENT_FUNDS("messages.insufficientFunds"),
+    PAY_YOURSELF("messages.payYourself"),
+    SEND_PAY("messages.paySend"),
+    RECEIVER_PAY("messages.payReceive"),
+    SEND_GIVE("messages.giveSend"),
+    RECEIVER_GIVE("messages.giveReceive"),
+    SEND_REMOVE("messages.removeSend"),
+    RECEIVER_REMOVE("messages.removeReceive"),
+    BAL_TOP_ONLINE("messages.balTopOnline"),
+    BAL_TOP_OFFLINE("messages.balTopOffline"),
+    BAL_TOP_NOT_FUNDS("messages.balTopNotFound"),
+    RESET_ALL("messages.resetAll"),
+    NO_PERMISSION("messages.noPermission"),
+    RELOAD("messages.reload"),
+    UNKNOWN_COMMAND("messages.unknownCommand"),
     ;
 
-    private final String message;
+    private final String configPath;
+    private String value = "Not Loaded! Please contact administrator!";
 
-    MessageManager(String message) {
-        this.message = message;
+    MessageManager(String configPath) {
+        this.configPath = configPath;
     }
 
-    public String build() {
-        return ChatColor.translateAlternateColorCodes('&', this.message);
-    }
-
-    public String build(Player player) {
-        final String message = WEconomy.getInstance().getPrefix() + " " + ChatColor.translateAlternateColorCodes('&', this.message);
-        if(hasPlaceHolderAPI()) {
-            return PlaceholderAPI.setPlaceholders(player, replace(player, message));
-        }
-        return replace(player, message);
-    }
-
-    public String build(Player player, Player receiver, double amount) {
-        final String message = WEconomy.getInstance().getPrefix() + " " + ChatColor.translateAlternateColorCodes('&', this.message);
-        if(hasPlaceHolderAPI()) {
-            return PlaceholderAPI.setPlaceholders(player, replace(player.getName(), receiver.getName(), amount, message));
-        }
-        return replace(player.getName(), receiver.getName(), amount, message);
-    }
-
-    public String build(String sender, String receiver, double amount) {
-        final String message = WEconomy.getInstance().getPrefix() + " " + ChatColor.translateAlternateColorCodes('&', this.message);
-        return replace(sender, receiver, amount, message);
-    }
-
-    public String build(int place, String playerName, double amount) {
-        final String message = ChatColor.translateAlternateColorCodes('&', this.message);
-        return replace(place, playerName, amount, message);
-    }
-
-    private String replace(Player player, String message) {
-        final WPlayerCache wPlayerCache = WEconomy.getInstance().getCacheManager().getPlayerCache(player.getUniqueId());
-        switch (this) {
-            case GET_MONEY : return message.replace("%weconomy_current%", String.valueOf(wPlayerCache.getMoney()));
-            default: return message;
+    public static void build(FileConfiguration config) {
+        for(MessageManager messageManager : MessageManager.values()){
+            messageManager.value = config.getString(messageManager.configPath);
         }
     }
 
-    private String replace(String sender, String receiver, double amount, String message) {
-        switch (this) {
-            case SEND_PAY, SEND_GIVE, SEND_REMOVE: {
-                final String doubleReplace = message.replace("%receiver%", receiver);
-                return doubleReplace.replace("%amount%", String.valueOf(amount));
-            }
-
-            case RECEIVER_PAY, RECEIVER_GIVE, RECEIVER_REMOVE: {
-                final String doubleReplace = message.replace("%player%", sender);
-                return doubleReplace.replace("%amount%", String.valueOf(amount));
-            }
-            default: return message;
-        }
-    }
-
-    private String replace(int place, String playerName, double amount, String message) {
-        switch (this) {
-            case BAL_TOP_ONLINE, BAL_TOP_OFFLINE : {
-                final String doubleReplace = message.replace("%rank%", String.valueOf(place));
-                final String tripleReplace = doubleReplace.replace("%player%", playerName);
-                return tripleReplace.replace("%amount%", String.valueOf(amount));
-            }
-
-            case BAL_TOP_NOT_FUNDS: return message.replace("%rank%", String.valueOf(place));
-            default: return message;
-        }
-    }
-
-    private boolean hasPlaceHolderAPI() {
-        return WEconomy.getInstance().getServer().getPluginManager().getPlugin("PlaceHolderAPI") != null;
-    }
+    @Override
+    public String toString() { return this.value; }
 }

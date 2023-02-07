@@ -1,227 +1,29 @@
 package fr.ward.weconomy.manager;
 
 import fr.ward.weconomy.WEconomy;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
-import org.bukkit.OfflinePlayer;
+import fr.ward.weconomy.economy.EconomyRegister;
+import fr.ward.weconomy.utils.MineLogger;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.ServicePriority;
 
-import java.util.List;
-import java.util.UUID;
+public class EconomyManager {
 
-public class EconomyManager implements Economy {
+    private EconomyRegister economyRegister;
 
-    @Override
-    public boolean isEnabled() {
-        return false;
+    public void load() {
+        setupEconomy();
     }
 
-    @Override
-    public String getName() {
-        return null;
+    public EconomyRegister getEconomy() {
+        return economyRegister;
     }
 
-    @Override
-    public boolean hasBankSupport() {
-        return false;
-    }
-
-    @Override
-    public int fractionalDigits() {
-        return 0;
-    }
-
-    @Override
-    public String format(double v) {
-        return null;
-    }
-
-    @Override
-    public String currencyNamePlural() {
-        return null;
-    }
-
-    @Override
-    public String currencyNameSingular() {
-        return null;
-    }
-
-    @Override
-    public boolean hasAccount(String s) {
-        return false;
-    }
-
-    @Override
-    public boolean hasAccount(OfflinePlayer offlinePlayer) {
-        return false;
-    }
-
-    @Override
-    public boolean hasAccount(String s, String s1) {
-        return false;
-    }
-
-    @Override
-    public boolean hasAccount(OfflinePlayer offlinePlayer, String s) {
-        return false;
-    }
-
-    @Override
-    public double getBalance(String uuid) {
-        return WEconomy.getInstance().getCacheManager().getBalance(UUID.fromString(uuid));
-    }
-
-    @Override
-    public double getBalance(OfflinePlayer offlinePlayer) {
-        return WEconomy.getInstance().getCacheManager().getBalance(offlinePlayer);
-    }
-
-    @Override
-    public double getBalance(String s, String s1) {
-        return 0;
-    }
-
-    @Override
-    public double getBalance(OfflinePlayer offlinePlayer, String s) {
-        return 0;
-    }
-
-    @Override
-    public boolean has(String s, double v) {
-        return false;
-    }
-
-    @Override
-    public boolean has(OfflinePlayer offlinePlayer, double v) {
-        return false;
-    }
-
-    @Override
-    public boolean has(String s, String s1, double v) {
-        return false;
-    }
-
-    @Override
-    public boolean has(OfflinePlayer offlinePlayer, String s, double v) {
-        return false;
-    }
-
-    @Override
-    public EconomyResponse withdrawPlayer(String uuid, double amount) {
-        return WEconomy.getInstance().getCacheManager().withdrawPlayer(UUID.fromString(uuid), (float) amount);
-    }
-
-    @Override
-    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, double amount) {
-        return WEconomy.getInstance().getCacheManager().withdrawPlayer(offlinePlayer, (float) amount);
-    }
-
-    @Override
-    public EconomyResponse withdrawPlayer(String s, String s1, double v) {
-        return null;
-    }
-
-    @Override
-    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, String s, double v) {
-        return null;
-    }
-
-    @Override
-    public EconomyResponse depositPlayer(String uuid, double amount) {
-        return WEconomy.getInstance().getCacheManager().depositPlayer(UUID.fromString(uuid), (float) amount);
-    }
-
-    @Override
-    public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) {
-        return WEconomy.getInstance().getCacheManager().depositPlayer(offlinePlayer, (float) amount);
-    }
-
-    @Override
-    public EconomyResponse depositPlayer(String s, String s1, double v) {
-        return null;
-    }
-
-    @Override
-    public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, String s, double v) {
-        return null;
-    }
-
-    @Override
-    public EconomyResponse createBank(String s, String s1) {
-        return null;
-    }
-
-    @Override
-    public EconomyResponse createBank(String s, OfflinePlayer offlinePlayer) {
-        return null;
-    }
-
-    @Override
-    public EconomyResponse deleteBank(String s) {
-        return null;
-    }
-
-    @Override
-    public EconomyResponse bankBalance(String s) {
-        return null;
-    }
-
-    @Override
-    public EconomyResponse bankHas(String s, double v) {
-        return null;
-    }
-
-    @Override
-    public EconomyResponse bankWithdraw(String s, double v) {
-        return null;
-    }
-
-    @Override
-    public EconomyResponse bankDeposit(String s, double v) {
-        return null;
-    }
-
-    @Override
-    public EconomyResponse isBankOwner(String s, String s1) {
-        return null;
-    }
-
-    @Override
-    public EconomyResponse isBankOwner(String s, OfflinePlayer offlinePlayer) {
-        return null;
-    }
-
-    @Override
-    public EconomyResponse isBankMember(String s, String s1) {
-        return null;
-    }
-
-    @Override
-    public EconomyResponse isBankMember(String s, OfflinePlayer offlinePlayer) {
-        return null;
-    }
-
-    @Override
-    public List<String> getBanks() {
-        return null;
-    }
-
-    @Override
-    public boolean createPlayerAccount(String s) {
-        return false;
-    }
-
-    @Override
-    public boolean createPlayerAccount(OfflinePlayer offlinePlayer) {
-        return false;
-    }
-
-    @Override
-    public boolean createPlayerAccount(String s, String s1) {
-        return false;
-    }
-
-    @Override
-    public boolean createPlayerAccount(OfflinePlayer offlinePlayer, String s) {
-        return false;
+    private void setupEconomy() {
+        if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
+            MineLogger.error("EconomyRegister could not be registered... Vault is missing!");
+            Bukkit.getServer().getPluginManager().disablePlugin(WEconomy.getInstance());
+        }
+        Bukkit.getServer().getServicesManager().register(EconomyRegister.class, this.economyRegister, WEconomy.getInstance(), ServicePriority.High);
+        MineLogger.info("EconomyRegister has ben registered!");
     }
 }

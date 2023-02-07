@@ -1,6 +1,7 @@
 package fr.ward.weconomy.database.type;
 
 import fr.ward.weconomy.WEconomy;
+import fr.ward.weconomy.config.ConfigType;
 import fr.ward.weconomy.database.DatabaseType;
 import fr.ward.weconomy.manager.MessageManager;
 import fr.ward.weconomy.utils.MineLogger;
@@ -12,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class Database {
@@ -19,8 +21,8 @@ public abstract class Database {
     Connection connection;
     private final String tableName;
 
-    public Database(WEconomy wEconomy) {
-        this.tableName = wEconomy.getConfig().getString("databaseTable");
+    public Database() {
+        this.tableName = ConfigType.DATABASE.getGeneratedYML().getConfig().getString("database.databaseTable");
     }
 
     public abstract Connection getSQLConnection() throws SQLException;
@@ -39,7 +41,7 @@ public abstract class Database {
     }
 
     public synchronized void addIntoDatabase(OfflinePlayer player) {
-        final DatabaseType databaseType = WEconomy.getInstance().getDatabaseType();
+        final DatabaseType databaseType = WEconomy.getInstance().getDatabaseManager().getDatabaseType();
         switch (databaseType) {
             case SQLITE -> execute("INSERT OR IGNORE INTO " + tableName + " VALUES(?,?)", player.getUniqueId().toString(), 0);
             case MYSQL -> execute("INSERT IGNORE INTO " + tableName + " VALUES(?,?)", player.getUniqueId().toString(), 0);
@@ -122,12 +124,18 @@ public abstract class Database {
                 final Player player = Bukkit.getPlayer(UUID.fromString(TopPlayer[0]));
                 final double amount = Math.round(Double.parseDouble(TopPlayer[1]) * 100.0) / 100.0;
                 if(player != null) {
-                    return MessageManager.BAL_TOP_ONLINE.build(place, player.getName(), amount);
+                    return MessageManager.BAL_TOP_ONLINE.toString()
+                            .replace("%rank%", String.valueOf(place))
+                            .replace("%player%", player.getName())
+                            .replace("%amount%", String.valueOf(amount));
                 } else {
-                    return MessageManager.BAL_TOP_OFFLINE.build(place, offlinePlayer.getName(), amount);
+                    return MessageManager.BAL_TOP_OFFLINE.toString()
+                            .replace("%rank%", String.valueOf(place))
+                            .replace("%player%", Objects.requireNonNull(offlinePlayer.getName()))
+                            .replace("%amount%", String.valueOf(amount));
                 }
             }
-            return MessageManager.BAL_TOP_NOT_FUNDS.build(place, null, 0);
+            return MessageManager.BAL_TOP_NOT_FUNDS.toString();
         } catch (SQLException ex) {
             MineLogger.error("" + ex);
         } finally {
@@ -140,7 +148,7 @@ public abstract class Database {
                 MineLogger.error("" + ex);
             }
         }
-        return MessageManager.BAL_TOP_NOT_FUNDS.build(place, null, 0);
+        return MessageManager.BAL_TOP_NOT_FUNDS.toString();
     }
 
     public void reset() {

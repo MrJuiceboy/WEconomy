@@ -1,6 +1,7 @@
 package fr.ward.weconomy.manager;
 
 import fr.ward.weconomy.WEconomy;
+import fr.ward.weconomy.config.ConfigType;
 import fr.ward.weconomy.discord.DiscordMessage;
 import fr.ward.weconomy.utils.MineLogger;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -14,6 +15,7 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import javax.security.auth.login.LoginException;
 
@@ -29,8 +31,9 @@ public class DiscordManager {
 
     public void sendMessage(DiscordMessage discordMessage, String sender, String receiver, double amount) {
         if(hasEnabled()) {
-            final String guildID = WEconomy.getInstance().getConfig().getString("discordServerID");
-            final String canalID = WEconomy.getInstance().getConfig().getString("discordCanalID");
+            final FileConfiguration config = ConfigType.DISCORD.getGeneratedYML().getConfig();
+            final String guildID = config.getString("Discord.serverID");
+            final String canalID = config.getString("Discord.canalID");
 
             if (guildID == null) {
                 MineLogger.error("[Discord Bot] Discord server id not found in the config.yml");
@@ -62,7 +65,7 @@ public class DiscordManager {
     }
 
     private void loadBot() {
-        final String token = WEconomy.getInstance().getConfig().getString("discordBotToken");
+        final String token = ConfigType.DISCORD.getGeneratedYML().getConfig().getString("Discord.botToken");
         try {
             jda = JDABuilder.createLight(token)
                     .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES)
@@ -88,7 +91,7 @@ public class DiscordManager {
     }
 
     private boolean hasEnabled(){
-        return WEconomy.getInstance().getConfig().getBoolean("discordBotEnabled");
+        return ConfigType.DISCORD.getGeneratedYML().getConfig().getBoolean("Discord.botEnabled");
     }
 
     private void handleException(Exception e) {
