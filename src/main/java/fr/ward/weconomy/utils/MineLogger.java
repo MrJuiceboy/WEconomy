@@ -9,14 +9,14 @@ public class MineLogger {
     }
 
     public static void info(String message) {
-        sendMessage(ChatColor.BLUE + "[INFO] " + message);
+        sendMessage(ChatColor.BLUE + "[WEconomy] " + message);
     }
 
     public static void warning(String message) {
-        sendMessage(ChatColor.YELLOW + "[WARNING] " + message);
+        sendMessage(ChatColor.YELLOW + "[WEconomy] " + message);
     }
 
     public static void error(String message) {
-        sendMessage(ChatColor.RED + "[ERROR] " + message);
+        sendMessage(ChatColor.RED + "[WEconomy] " + message);
     }
 }

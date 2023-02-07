@@ -6,6 +6,7 @@ import fr.ward.weconomy.database.type.Database;
 import fr.ward.weconomy.discord.DiscordMessage;
 import fr.ward.weconomy.manager.CacheManager;
 import fr.ward.weconomy.manager.EconomyManager;
+import fr.ward.weconomy.manager.MessageListManager;
 import fr.ward.weconomy.manager.MessageManager;
 import fr.ward.weconomy.utils.MineLogger;
 import fr.ward.weconomy.utils.MineUtils;
@@ -22,14 +23,22 @@ public class WEconomyCommand implements CommandExecutor {
 
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {
         if (commandSender instanceof final Player player) {
+            if(args.length == 0 || args[0].equals("help")) {
+                help(player);
+                return true;
+            }
 
-            if(args.length == 0 || args[0].equals("balance")) {
+            if(args[0].equals("balance") || args[0].equals("money")) {
                 MineUtils.sendMessage(player, MessageManager.GET_MONEY.toString()
                         .replace("%current%", String.valueOf(WEconomy.getInstance().getCacheManager().getBalance(player.getUniqueId()))));
                 return true;
             }
 
             if(args.length == 1) {
+                if(args[0].equals("reload") || args[0].equals("rl")) {
+                    return reload(player);
+                }
+
                 if(args[0].equals("credit") || args[0].equals("dev") || args[0].equals("plugin")) {
                     player.sendMessage(MineUtils.getPrefix() + ChatColor.GRAY + " Created by " + ChatColor.AQUA +  "Ward" + ChatColor.GRAY + " with " + ChatColor.DARK_RED + "❤" + ChatColor.DARK_GRAY + " (Plugin Free)");
                     player.sendMessage(ChatColor.BLUE + "[Discord] " + ChatColor.GRAY + "https://discord.gg/cJF48s3SBJ" + ChatColor.GRAY + " (" + ChatColor.YELLOW + "Click" + ChatColor.GRAY + ")");
@@ -99,6 +108,35 @@ public class WEconomyCommand implements CommandExecutor {
             }
         }
         return false;
+    }
+
+    private boolean reload(Player player) {
+        if(player != null && checkPermission(player, "weconomy.reload")) {
+            MineUtils.sendMessage(player, MessageManager.NO_PERMISSION.toString()
+                    .replace("%permission%", "weconomy.reload"));
+            return false;
+        }
+
+        WEconomy.getInstance().reload();
+
+        if(player != null) {
+            MineUtils.sendMessage(player, MessageManager.RELOAD.toString());
+        } else {
+            MineLogger.info(MessageManager.RELOAD.toString());
+        }
+        return true;
+    }
+
+    private void help(Player player) {
+        if(!checkPermission(player, "weconomy.reload")) {
+            for(String message : MessageListManager.HELP_ADMIN.toStringList()) {
+                player.sendMessage(MineUtils.color(message));
+            }
+        } else {
+            for(String message : MessageListManager.HELP.toStringList()) {
+                player.sendMessage(MineUtils.color(message));
+            }
+        }
     }
 
     private void top(Player player) {

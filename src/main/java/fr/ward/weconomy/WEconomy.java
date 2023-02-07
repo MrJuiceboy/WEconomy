@@ -8,6 +8,8 @@ import fr.ward.weconomy.placeholder.SomeExpansion;
 import fr.ward.weconomy.utils.Metrics;
 import fr.ward.weconomy.utils.MineLogger;
 import fr.ward.weconomy.utils.MineUpdater;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -64,6 +66,7 @@ public class WEconomy extends JavaPlugin {
         setupPlaceHolder();
 
         MessageManager.build(ConfigType.MESSAGE.getGeneratedYML().getConfig());
+        MessageListManager.build(ConfigType.MESSAGE.getGeneratedYML().getConfig());
 
         final PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new PlayerJoinLeaveListener(), this);
@@ -73,6 +76,17 @@ public class WEconomy extends JavaPlugin {
         loadBStats();
 
         super.onEnable();
+    }
+
+    public void reload() {
+        this.reloadConfig();
+        getConfigManager().reloadConfig();
+        MessageManager.build(ConfigType.MESSAGE.getGeneratedYML().getConfig());
+        MessageListManager.build(ConfigType.MESSAGE.getGeneratedYML().getConfig());
+        for(Player plz : Bukkit.getOnlinePlayers()) {
+            getCacheManager().updatePlayerData(plz.getUniqueId());
+            getCacheManager().addPlayerCache(plz);
+        }
     }
 
     private void setupPlaceHolder() {
