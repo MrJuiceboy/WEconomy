@@ -33,7 +33,9 @@ public class CacheManager {
                 return playerCache;
             }
         }
-        return null;
+        final WPlayerCache wPlayerCache = new WPlayerCache(uuid, WEconomy.getInstance().getDatabaseManager().getDatabase().getMoney(uuid));
+        WEconomy.getInstance().getCacheManager().getPlayerCaches().add(wPlayerCache);
+        return wPlayerCache;
     }
 
     public void updatePlayerData(UUID uuid) {

@@ -5,6 +5,7 @@ import fr.ward.weconomy.config.ConfigType;
 import fr.ward.weconomy.database.DatabaseType;
 import fr.ward.weconomy.manager.MessageManager;
 import fr.ward.weconomy.utils.MineLogger;
+import fr.ward.weconomy.utils.MineUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -124,18 +125,18 @@ public abstract class Database {
                 final Player player = Bukkit.getPlayer(UUID.fromString(TopPlayer[0]));
                 final double amount = Math.round(Double.parseDouble(TopPlayer[1]) * 100.0) / 100.0;
                 if(player != null) {
-                    return MessageManager.BAL_TOP_ONLINE.toString()
+                    return MineUtils.color(MessageManager.BAL_TOP_ONLINE.toString()
                             .replace("%rank%", String.valueOf(place))
                             .replace("%player%", player.getName())
-                            .replace("%amount%", String.valueOf(amount));
+                            .replace("%amount%", String.valueOf(amount)));
                 } else {
-                    return MessageManager.BAL_TOP_OFFLINE.toString()
+                    return MineUtils.color(MessageManager.BAL_TOP_OFFLINE.toString()
                             .replace("%rank%", String.valueOf(place))
                             .replace("%player%", Objects.requireNonNull(offlinePlayer.getName()))
-                            .replace("%amount%", String.valueOf(amount));
+                            .replace("%amount%", String.valueOf(amount)));
                 }
             }
-            return MessageManager.BAL_TOP_NOT_FUNDS.toString();
+            return MineUtils.color(MessageManager.BAL_TOP_NOT_FUNDS.toString());
         } catch (SQLException ex) {
             MineLogger.error("" + ex);
         } finally {
@@ -148,7 +149,8 @@ public abstract class Database {
                 MineLogger.error("" + ex);
             }
         }
-        return MessageManager.BAL_TOP_NOT_FUNDS.toString();
+        return MineUtils.color(MessageManager.BAL_TOP_NOT_FUNDS.toString()
+                .replace("%rank%", String.valueOf(place)));
     }
 
     public void reset() {

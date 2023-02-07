@@ -10,11 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab91d30b-734f-491e-bffc-1fcc45d019f3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/manager/MessageListManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/WEconomy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/WEconomy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/command/WEconomyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/command/WEconomyCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/message.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/message.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/database/type/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/database/type/Database.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/manager/CacheManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/ward/weconomy/manager/CacheManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
