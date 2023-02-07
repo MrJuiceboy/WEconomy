@@ -1,5 +1,3 @@
 Discord:
-  botEnabled: false
-  botToken: ''
-  serverID: ''
-  canalID: ''
+  enabled: false
+  webHook-URL:

@@ -1,10 +1,9 @@
 package fr.ward.weconomy.discord;
 
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.utils.MarkdownUtil;
+import fr.ward.weconomy.utils.DiscordWebhook;
 
 import java.awt.*;
-import java.time.Instant;
+import java.io.IOException;
 
 public enum DiscordMessage {
 
@@ -24,17 +23,22 @@ public enum DiscordMessage {
         this.color = color;
     }
 
-    public EmbedBuilder buildEmbed(String sender, String receiver, int amount) {
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle(MarkdownUtil.bold(this.title));
-
+    public void buildEmbed(DiscordWebhook webhook, String sender, String receiver, double amount) {
         if(receiver != null) {
-            embedBuilder.addField(receiver, this.field + amount, true);
+            webhook.addEmbed(new DiscordWebhook.EmbedObject()
+                    .setTitle("**" + this.title + "**")
+                    .addField(receiver, this.field + amount, true)
+                    .setFooter("Send by " + sender, "")
+                    .setColor(this.color));
+        } else {
+            webhook.addEmbed(new DiscordWebhook.EmbedObject()
+                    .setTitle("**" + this.title + "**")
+                    .setFooter("Send by " + sender, "")
+                    .setColor(this.color));
         }
 
-        embedBuilder.setFooter("Send by " + sender);
-        embedBuilder.setTimestamp(Instant.now());
-        embedBuilder.setColor(this.color);
-        return embedBuilder;
+        try {
+            webhook.execute();
+        } catch (IOException ignored) {}
     }
 }
