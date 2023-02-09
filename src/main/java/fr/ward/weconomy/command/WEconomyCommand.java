@@ -12,12 +12,15 @@ import fr.ward.weconomy.utils.MineLogger;
 import fr.ward.weconomy.utils.MineUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
 
 public class WEconomyCommand implements CommandExecutor {
 
@@ -30,7 +33,7 @@ public class WEconomyCommand implements CommandExecutor {
 
             if(args[0].equals("balance") || args[0].equals("money")) {
                 MineUtils.sendMessage(player, MessageManager.GET_MONEY.toString()
-                        .replace("%current%", String.valueOf(WEconomy.getInstance().getCacheManager().getBalance(player.getUniqueId()))));
+                        .replace("%current%", String.valueOf(WEconomy.getInstance().getCacheManager().getBalance(player))));
                 return true;
             }
 
@@ -209,18 +212,18 @@ public class WEconomyCommand implements CommandExecutor {
 
         final Player receiver = Bukkit.getPlayer(target);
 
-        if(receiver == null){
-            MineUtils.sendMessage(player, MessageManager.PLAYER_NOT_FOUND.toString());
-        } else {
-            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.GIVE, player.getName(), receiver.getName(), amount);
-            economyManager.getEconomy().depositPlayer(receiver.getUniqueId().toString(), amount);
-            MineUtils.sendMessage(player, MessageManager.SEND_GIVE.toString()
-                    .replace("%receiver%", receiver.getName())
-                    .replace("%amount%", String.valueOf(amount)));
+        WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.GIVE, player.getName(), target, amount);
+        economyManager.getEconomy().depositPlayer(target, amount);
+        MineUtils.sendMessage(player, MessageManager.SEND_GIVE.toString()
+                .replace("%receiver%", target)
+                .replace("%amount%", String.valueOf(amount)));
+
+        if(receiver != null) {
             MineUtils.sendMessage(receiver, MessageManager.RECEIVER_GIVE.toString()
                     .replace("%sender%", player.getName())
                     .replace("%amount%", String.valueOf(amount)));
         }
+
     }
 
     private void givePlayer(String target, Double amount) {
@@ -233,14 +236,13 @@ public class WEconomyCommand implements CommandExecutor {
 
         final Player receiver = Bukkit.getPlayer(target);
 
-        if(receiver == null){
-            MineLogger.warning(MessageManager.PLAYER_NOT_FOUND.toString());
-        } else {
-            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.GIVE, "[Console]", receiver.getName(), amount);
-            economyManager.getEconomy().depositPlayer(receiver.getUniqueId().toString(), amount);
-            MineLogger.info(MessageManager.SEND_GIVE.toString()
-                    .replace("%receiver%", receiver.getName())
-                    .replace("%amount%", String.valueOf(amount)));
+        WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.GIVE, "[Console]", target, amount);
+        economyManager.getEconomy().depositPlayer(target, amount);
+        MineLogger.info(MessageManager.SEND_GIVE.toString()
+                .replace("%receiver%", target)
+                .replace("%amount%", String.valueOf(amount)));
+
+        if(receiver != null) {
             MineUtils.sendMessage(receiver, MessageManager.RECEIVER_GIVE.toString()
                     .replace("%sender%", "[Console]")
                     .replace("%amount%", String.valueOf(amount)));
@@ -263,14 +265,13 @@ public class WEconomyCommand implements CommandExecutor {
 
         final Player receiver = Bukkit.getPlayer(target);
 
-        if(receiver == null){
-            MineUtils.sendMessage(player, MessageManager.PLAYER_NOT_FOUND.toString());
-        } else {
-            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, player.getName(), receiver.getName(), amount);
-            economyManager.getEconomy().withdrawPlayer(receiver.getUniqueId().toString(), amount);
-            MineUtils.sendMessage(player, MessageManager.SEND_REMOVE.toString()
-                    .replace("%receiver%", receiver.getName())
-                    .replace("%amount%", String.valueOf(amount)));
+        WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, player.getName(), target, amount);
+        economyManager.getEconomy().withdrawPlayer(target, amount);
+        MineUtils.sendMessage(player, MessageManager.SEND_REMOVE.toString()
+                .replace("%receiver%", target)
+                .replace("%amount%", String.valueOf(amount)));
+
+        if(receiver != null) {
             MineUtils.sendMessage(receiver, MessageManager.RECEIVER_REMOVE.toString()
                     .replace("%sender%", player.getName())
                     .replace("%amount%", String.valueOf(amount)));
@@ -287,14 +288,13 @@ public class WEconomyCommand implements CommandExecutor {
 
         final Player receiver = Bukkit.getPlayer(target);
 
-        if(receiver == null){
-            MineLogger.warning(MessageManager.PLAYER_NOT_FOUND.toString());
-        } else {
-            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, "[Console]", receiver.getName(), amount);
-            economyManager.getEconomy().withdrawPlayer(receiver.getUniqueId().toString(), amount);
-            MineLogger.info(MessageManager.SEND_REMOVE.toString()
-                    .replace("%receiver%", receiver.getName())
-                    .replace("%amount%", String.valueOf(amount)));
+        WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, "[Console]", target, amount);
+        economyManager.getEconomy().withdrawPlayer(target, amount);
+        MineLogger.info(MessageManager.SEND_REMOVE.toString()
+                .replace("%receiver%", target)
+                .replace("%amount%", String.valueOf(amount)));
+
+        if(receiver != null) {
             MineUtils.sendMessage(receiver, MessageManager.RECEIVER_REMOVE.toString()
                     .replace("%sender%", "[Console]")
                     .replace("%amount%", String.valueOf(amount)));
@@ -344,20 +344,17 @@ public class WEconomyCommand implements CommandExecutor {
 
         final Player receiver = Bukkit.getPlayer(target);
 
-        if(receiver == null){
-            MineUtils.sendMessage(player, MessageManager.PLAYER_NOT_FOUND.toString());
-        } else {
-            final WPlayerCache wPlayerCache = WEconomy.getInstance().getCacheManager().getPlayerCache(receiver.getUniqueId());
+        WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, player.getName(), target, economyManager.getEconomy().getBalance(target));
+        MineUtils.sendMessage(player, MessageManager.SEND_REMOVE.toString()
+                .replace("%receiver%", target)
+                .replace("%amount%", String.valueOf(economyManager.getEconomy().getBalance(target))));
 
-            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, player.getName(), receiver.getName(), wPlayerCache.getMoney());
-            MineUtils.sendMessage(player, MessageManager.SEND_REMOVE.toString()
-                    .replace("%receiver%", receiver.getName())
-                    .replace("%amount%", String.valueOf(wPlayerCache.getMoney())));
+        if(receiver != null) {
             MineUtils.sendMessage(receiver, MessageManager.RECEIVER_REMOVE.toString()
                     .replace("%sender%", player.getName())
-                    .replace("%amount%", String.valueOf(wPlayerCache.getMoney())));
-            economyManager.getEconomy().withdrawPlayer(receiver.getUniqueId().toString(), wPlayerCache.getMoney());
+                    .replace("%amount%", String.valueOf(economyManager.getEconomy().getBalance(target))));
         }
+        economyManager.getEconomy().withdrawPlayer(target, economyManager.getEconomy().getBalance(target));
     }
 
     private void reset(String target) {
@@ -365,20 +362,17 @@ public class WEconomyCommand implements CommandExecutor {
 
         final Player receiver = Bukkit.getPlayer(target);
 
-        if(receiver == null){
-            MineLogger.warning(MessageManager.PLAYER_NOT_FOUND.toString());
-        } else {
-            final WPlayerCache wPlayerCache = WEconomy.getInstance().getCacheManager().getPlayerCache(receiver.getUniqueId());
+        WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, "[Console]", target, economyManager.getEconomy().getBalance(target));
+        MineLogger.info(MessageManager.SEND_REMOVE.toString()
+                .replace("%receiver%", target)
+                .replace("%amount%", String.valueOf(economyManager.getEconomy().getBalance(target))));
 
-            WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, "[Console]", receiver.getName(), wPlayerCache.getMoney());
-            MineLogger.info(MessageManager.SEND_REMOVE.toString()
-                    .replace("%receiver%", receiver.getName())
-                    .replace("%amount%", String.valueOf(wPlayerCache.getMoney())));
+        if(receiver != null) {
             MineUtils.sendMessage(receiver, MessageManager.RECEIVER_REMOVE.toString()
                     .replace("%sender%", "[Console]")
-                    .replace("%amount%", String.valueOf(wPlayerCache.getMoney())));
-            economyManager.getEconomy().withdrawPlayer(receiver.getUniqueId().toString(), wPlayerCache.getMoney());
+                    .replace("%amount%", String.valueOf(economyManager.getEconomy().getBalance(target))));
         }
+        economyManager.getEconomy().withdrawPlayer(target, economyManager.getEconomy().getBalance(target));
     }
 
     private boolean checkPermission(Player player, String permission) {

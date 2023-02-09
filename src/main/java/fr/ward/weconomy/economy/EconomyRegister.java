@@ -67,7 +67,7 @@ public class EconomyRegister implements Economy {
 
     @Override
     public double getBalance(String uuid) {
-        return WEconomy.getInstance().getCacheManager().getBalance(UUID.fromString(uuid));
+        return WEconomy.getInstance().getCacheManager().getBalance(uuid);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class EconomyRegister implements Economy {
 
     @Override
     public EconomyResponse withdrawPlayer(String uuid, double amount) {
-        return WEconomy.getInstance().getCacheManager().withdrawPlayer(UUID.fromString(uuid), (float) amount);
+        return WEconomy.getInstance().getCacheManager().withdrawPlayer(uuid, (float) amount);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class EconomyRegister implements Economy {
 
     @Override
     public EconomyResponse depositPlayer(String uuid, double amount) {
-        return WEconomy.getInstance().getCacheManager().depositPlayer(UUID.fromString(uuid), (float) amount);
+        return WEconomy.getInstance().getCacheManager().depositPlayer(uuid, (float) amount);
     }
 
     @Override

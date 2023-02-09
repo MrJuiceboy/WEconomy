@@ -129,14 +129,13 @@ public abstract class Database {
                             .replace("%rank%", String.valueOf(place))
                             .replace("%player%", player.getName())
                             .replace("%amount%", String.valueOf(amount)));
-                } else {
+                } else if(offlinePlayer.getName() != null) {
                     return MineUtils.color(MessageManager.BAL_TOP_OFFLINE.toString()
                             .replace("%rank%", String.valueOf(place))
-                            .replace("%player%", Objects.requireNonNull(offlinePlayer.getName()))
+                            .replace("%player%", offlinePlayer.getName())
                             .replace("%amount%", String.valueOf(amount)));
                 }
             }
-            return MineUtils.color(MessageManager.BAL_TOP_NOT_FUNDS.toString());
         } catch (SQLException ex) {
             MineLogger.error("" + ex);
         } finally {

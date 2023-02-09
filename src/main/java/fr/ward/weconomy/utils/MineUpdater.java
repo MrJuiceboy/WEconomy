@@ -10,7 +10,6 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 
 public class MineUpdater {
-
     private final JavaPlugin plugin;
     private final int resourceId;
 
