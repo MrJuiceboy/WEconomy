@@ -1,9 +1,11 @@
 name: WEconomy
 version: 0.0.6
+website: https://discord.gg/cJF48s3SBJ
 description: WEconomy
 main: fr.ward.weconomy.WEconomy
 author: Ward
 depend: [Vault]
+api-version: "1.13"
 softdepend: [PlaceholderAPI]
 commands:
   economy:

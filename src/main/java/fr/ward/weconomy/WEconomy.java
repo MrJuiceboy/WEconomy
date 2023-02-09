@@ -40,6 +40,8 @@ public class WEconomy extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        this.economyManager = new EconomyManager();
+        economyManager.load();
         super.onLoad();
     }
 
@@ -53,12 +55,10 @@ public class WEconomy extends JavaPlugin {
         saveConfig();
 
         this.cacheManager = new CacheManager();
-        this.economyManager = new EconomyManager();
         this.configManager = new ConfigManager(this);
         this.databaseManager = new DatabaseManager();
         this.discordManager = new DiscordManager();
 
-        economyManager.load();
         configManager.load();
         databaseManager.load();
         discordManager.load();
