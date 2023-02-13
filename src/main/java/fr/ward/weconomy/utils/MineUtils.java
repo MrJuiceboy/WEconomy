@@ -1,5 +1,6 @@
 package fr.ward.weconomy.utils;
 
+import fr.ward.weconomy.WEconomy;
 import fr.ward.weconomy.manager.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,7 +19,8 @@ public class MineUtils {
         return color(MessageManager.PREFIX.toString());
     }
 
-    public static void sendMessage(Player player, String message){
+    public static void sendMessage(Player player, String message, boolean console){
+        if(console && !WEconomy.getInstance().getConfig().getBoolean("options.console-message")) return;
         player.sendMessage(color(message).replace("%prefix%", getPrefix()));
     }
 

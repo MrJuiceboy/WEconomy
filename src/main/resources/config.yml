@@ -1,5 +1,6 @@
 options:
   check-update: true
+  console-message: true
 
 economy:
   currencySymbol: '$'
