@@ -1,2 +1,5 @@
 options:
   check-update: true
+
+economy:
+  currencySymbol: '$'

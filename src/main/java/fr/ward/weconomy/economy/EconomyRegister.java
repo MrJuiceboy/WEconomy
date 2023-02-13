@@ -1,23 +1,23 @@
 package fr.ward.weconomy.economy;
 
 import fr.ward.weconomy.WEconomy;
+import fr.ward.weconomy.utils.MineUtils;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
 
 import java.util.List;
-import java.util.UUID;
 
 public class EconomyRegister implements Economy {
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return WEconomy.getInstance().isEnabled();
     }
 
     @Override
     public String getName() {
-        return null;
+        return "WEconomy";
     }
 
     @Override
@@ -27,22 +27,22 @@ public class EconomyRegister implements Economy {
 
     @Override
     public int fractionalDigits() {
-        return 0;
+        return -1;
     }
 
     @Override
-    public String format(double v) {
-        return null;
+    public String format(double amount) {
+        return MineUtils.getDecimalFormat().format(amount);
     }
 
     @Override
     public String currencyNamePlural() {
-        return null;
+        return currencyNameSingular();
     }
 
     @Override
     public String currencyNameSingular() {
-        return null;
+        return WEconomy.getInstance().getConfig().getString("economy.currencySymbol");
     }
 
     @Override
@@ -76,13 +76,13 @@ public class EconomyRegister implements Economy {
     }
 
     @Override
-    public double getBalance(String s, String s1) {
-        return 0;
+    public double getBalance(String playerName, String world) {
+        return getBalance(playerName);
     }
 
     @Override
-    public double getBalance(OfflinePlayer offlinePlayer, String s) {
-        return 0;
+    public double getBalance(OfflinePlayer offlinePlayer, String world) {
+        return getBalance(offlinePlayer);
     }
 
     @Override
@@ -116,13 +116,13 @@ public class EconomyRegister implements Economy {
     }
 
     @Override
-    public EconomyResponse withdrawPlayer(String s, String s1, double v) {
-        return null;
+    public EconomyResponse withdrawPlayer(String playerName, String worldName, double amount) {
+        return withdrawPlayer(playerName, amount);
     }
 
     @Override
-    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, String s, double v) {
-        return null;
+    public EconomyResponse withdrawPlayer(OfflinePlayer offlinePlayer, String worldName, double amount) {
+        return withdrawPlayer(offlinePlayer, amount);
     }
 
     @Override
@@ -136,13 +136,13 @@ public class EconomyRegister implements Economy {
     }
 
     @Override
-    public EconomyResponse depositPlayer(String s, String s1, double v) {
-        return null;
+    public EconomyResponse depositPlayer(String playerName, String worldName, double amount) {
+        return depositPlayer(playerName, amount);
     }
 
     @Override
-    public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, String s, double v) {
-        return null;
+    public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, String worldName, double amount) {
+        return depositPlayer(offlinePlayer, amount);
     }
 
     @Override
@@ -206,22 +206,22 @@ public class EconomyRegister implements Economy {
     }
 
     @Override
-    public boolean createPlayerAccount(String s) {
-        return false;
+    public boolean createPlayerAccount(String playerName) {
+        return new EconomyResponse(0.0D, 0.0D, EconomyResponse.ResponseType.NOT_IMPLEMENTED, "WEconomy does not support bank accounts!").transactionSuccess();
     }
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer offlinePlayer) {
-        return false;
+        return new EconomyResponse(0.0D, 0.0D, EconomyResponse.ResponseType.NOT_IMPLEMENTED, "WEconomy does not support bank accounts!").transactionSuccess();
     }
 
     @Override
     public boolean createPlayerAccount(String s, String s1) {
-        return false;
+        return new EconomyResponse(0.0D, 0.0D, EconomyResponse.ResponseType.NOT_IMPLEMENTED, "WEconomy does not support bank accounts!").transactionSuccess();
     }
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer offlinePlayer, String s) {
-        return false;
+        return new EconomyResponse(0.0D, 0.0D, EconomyResponse.ResponseType.NOT_IMPLEMENTED, "WEconomy does not support bank accounts!").transactionSuccess();
     }
 }

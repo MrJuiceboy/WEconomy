@@ -80,21 +80,21 @@ public class CacheManager {
             if(currentAmount >= amount) {
                 wPlayerCache.setMoney(wPlayerCache.getMoney() - amount);
                 updatePlayerData(offlinePlayer.getUniqueId());
-                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");
+                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, null);
             } else {
-                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.FAILURE, "");
+                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.FAILURE, "Loan was not permitted!");
             }
         } else if(offlinePlayer.hasPlayedBefore()) {
             final Database database = WEconomy.getInstance().getDatabaseManager().getDatabase();
             final float currentAmount = database.getMoney(offlinePlayer.getUniqueId());
             if(currentAmount >= amount) {
                 database.setMoney(offlinePlayer.getUniqueId(), currentAmount - amount);
-                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");
+                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, null);
             } else {
-                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.FAILURE, "");
+                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.FAILURE, "Loan was not permitted!");
             }
         } else {
-            return new EconomyResponse(amount, 0, EconomyResponse.ResponseType.FAILURE, "");
+            return new EconomyResponse(amount, 0, EconomyResponse.ResponseType.FAILURE, "User does not exist!");
         }
     }
 
@@ -109,21 +109,21 @@ public class CacheManager {
             if(currentAmount >= amount) {
                 wPlayerCache.setMoney(wPlayerCache.getMoney() - amount);
                 updatePlayerData(player.getUniqueId());
-                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");
+                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, null);
             } else {
-                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.FAILURE, "");
+                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.FAILURE, "Loan was not permitted!");
             }
         } else if(offlinePlayer.hasPlayedBefore()) {
             final Database database = WEconomy.getInstance().getDatabaseManager().getDatabase();
             final float currentAmount = database.getMoney(player_UUID);
             if (currentAmount >= amount) {
                 database.setMoney(player_UUID, currentAmount - amount);
-                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");
+                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, null);
             } else {
-                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.FAILURE, "");
+                return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.FAILURE, "Loan was not permitted!");
             }
         } else {
-            return new EconomyResponse(amount, 0, EconomyResponse.ResponseType.FAILURE, "");
+            return new EconomyResponse(amount, 0, EconomyResponse.ResponseType.FAILURE, "User does not exist!");
         }
     }
 
@@ -133,14 +133,14 @@ public class CacheManager {
             final float currentAmount = WEconomy.getInstance().getDatabaseManager().getDatabase().getMoney(offlinePlayer.getUniqueId());
             wPlayerCache.setMoney(wPlayerCache.getMoney() + amount);
             updatePlayerData(offlinePlayer.getUniqueId());
-            return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");
+            return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, null);
         } else if(offlinePlayer.hasPlayedBefore()) {
             final Database database = WEconomy.getInstance().getDatabaseManager().getDatabase();
             final float currentAmount = database.getMoney(offlinePlayer.getUniqueId());
             database.setMoney(offlinePlayer.getUniqueId(), currentAmount + amount);
-            return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");
+            return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, null);
         } else {
-            return new EconomyResponse(amount, 0, EconomyResponse.ResponseType.FAILURE, "");
+            return new EconomyResponse(amount, 0, EconomyResponse.ResponseType.FAILURE, "User does not exist!");
         }
     }
 
@@ -154,14 +154,14 @@ public class CacheManager {
             final float currentAmount = WEconomy.getInstance().getDatabaseManager().getDatabase().getMoney(player.getUniqueId());
             wPlayerCache.setMoney(wPlayerCache.getMoney() + amount);
             updatePlayerData(player.getUniqueId());
-            return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");
+            return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, null);
         } else if(offlinePlayer.hasPlayedBefore()) {
             final Database database = WEconomy.getInstance().getDatabaseManager().getDatabase();
             final float currentAmount = database.getMoney(player_UUID);
             database.setMoney(player_UUID, currentAmount + amount);
-            return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, "");
+            return new EconomyResponse(amount, currentAmount, EconomyResponse.ResponseType.SUCCESS, null);
         } else {
-            return new EconomyResponse(amount, 0, EconomyResponse.ResponseType.FAILURE, "");
+            return new EconomyResponse(amount, 0, EconomyResponse.ResponseType.FAILURE, "User does not exist!");
         }
     }
 }
