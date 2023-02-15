@@ -11,6 +11,8 @@ public enum DiscordMessage {
     GIVE("Command Give", "+", Color.CYAN),
     REMOVE("Command Remove", "-", Color.YELLOW),
     RESET("Command Reset", null, Color.RED),
+    BAG("Command Bag", null, Color.DARK_GRAY),
+    GIFT("Command Gift", null, Color.MAGENTA),
     ;
 
     private final String title;

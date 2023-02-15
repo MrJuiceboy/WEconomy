@@ -7,7 +7,12 @@ import java.util.List;
 public enum MessageListManager {
 
     HELP("messages.help"),
-    HELP_ADMIN("messages.helpAdmin");
+    HELP_ADMIN("messages.helpAdmin"),
+
+    BAG_LORE("bag-item.lore"),
+    GIFT_LORE("gift-item.lore"),
+
+    ;
 
     private final String configPath;
     private List<String> value = List.of("Not Loaded! Please contact administrator!");

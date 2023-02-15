@@ -77,6 +77,19 @@ public class WEconomyCommand implements CommandExecutor {
                     removePlayer(player, args[1], Double.parseDouble(args[2]));
                     return true;
                 }
+
+                if(args[0].equals("deposit") || args[0].equals("depot")) {
+                    if(args[1].equals("bag")) {
+                        depositBag(player, Double.parseDouble(args[2]));
+                        return true;
+                    }
+
+                    if(args[1].equals("gift")) {
+                        depositGift(player, Double.parseDouble(args[2]));
+                        return true;
+                    }
+                    return true;
+                }
             }
 
             MineUtils.sendMessage(player, MessageManager.UNKNOWN_COMMAND.toString(), false);
@@ -107,6 +120,110 @@ public class WEconomyCommand implements CommandExecutor {
             }
         }
         return false;
+    }
+
+    private void depositBag(Player player, double amount) {
+        final EconomyManager economyManager = WEconomy.getInstance().getEconomyManager();
+
+        if(!WEconomy.getInstance().getConfig().getBoolean("bag-item.enabled")) {
+            MineUtils.sendMessage(player, MessageManager.BAG_DISABLED.toString(), false);
+            return;
+        }
+
+        if(checkPermission(player, "weconomy.bag")) {
+            MineUtils.sendMessage(player, MessageManager.NO_PERMISSION.toString()
+                    .replace("%permission%", "weconomy.bag"), false);
+            return;
+        }
+
+        if(amount < 0.0D) {
+            MineUtils.sendMessage(player, MessageManager.NEGATIVE_AMOUNT.toString(), false);
+            return;
+        }
+
+        final double minimalAmount = WEconomy.getInstance().getConfig().getDouble("bag-item.minimalAmount");
+
+        if(amount < minimalAmount) {
+            MineUtils.sendMessage(player, MessageManager.MINIMAL_AMOUNT_DEPOT.toString()
+                    .replace("%amount%", String.valueOf(minimalAmount)), false);
+            return;
+        }
+
+        final double maximalAmount = WEconomy.getInstance().getConfig().getDouble("bag-item.maximalAmount");
+
+        if(amount > maximalAmount) {
+            MineUtils.sendMessage(player, MessageManager.MAXIMUM_AMOUNT_DEPOT.toString()
+                    .replace("%amount%", String.valueOf(maximalAmount)), false);
+            return;
+        }
+
+        if(amount > economyManager.getEconomy().getBalance(player.getUniqueId().toString())) {
+            MineUtils.sendMessage(player, MessageManager.INSUFFICIENT_FUNDS.toString(), false);
+            return;
+        }
+
+        if(MineUtils.isInventoryFull(player)) {
+            MineUtils.sendMessage(player, MessageManager.INVENTORY_FULL.toString(), false);
+            return;
+        }
+
+        WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.BAG, player.getName(), null, amount);
+        economyManager.getEconomy().withdrawPlayer(player, amount);
+        MineUtils.sendMessage(player, MessageManager.BAG_DEPOSIT.toString()
+                .replace("%amount%", String.valueOf(amount)), false);
+        player.getInventory().addItem(MineUtils.bagItem(player.getName(), amount));
+    }
+
+    private void depositGift(Player player, double amount) {
+        final EconomyManager economyManager = WEconomy.getInstance().getEconomyManager();
+
+        if(!WEconomy.getInstance().getConfig().getBoolean("gift-item.enabled")) {
+            MineUtils.sendMessage(player, MessageManager.BAG_DISABLED.toString(), false);
+            return;
+        }
+
+        if(checkPermission(player, "weconomy.gift")) {
+            MineUtils.sendMessage(player, MessageManager.NO_PERMISSION.toString()
+                    .replace("%permission%", "weconomy.gift"), false);
+            return;
+        }
+
+        if(amount < 0.0D) {
+            MineUtils.sendMessage(player, MessageManager.NEGATIVE_AMOUNT.toString(), false);
+            return;
+        }
+
+        final double minimalAmount = WEconomy.getInstance().getConfig().getDouble("gift-item.minimalAmount");
+
+        if(amount < minimalAmount) {
+            MineUtils.sendMessage(player, MessageManager.MINIMAL_AMOUNT_DEPOT.toString()
+                    .replace("%amount%", String.valueOf(minimalAmount)), false);
+            return;
+        }
+
+        final double maximalAmount = WEconomy.getInstance().getConfig().getDouble("gift-item.maximalAmount");
+
+        if(amount > maximalAmount) {
+            MineUtils.sendMessage(player, MessageManager.MAXIMUM_AMOUNT_DEPOT.toString()
+                    .replace("%amount%", String.valueOf(maximalAmount)), false);
+            return;
+        }
+
+        if(amount > economyManager.getEconomy().getBalance(player.getUniqueId().toString())) {
+            MineUtils.sendMessage(player, MessageManager.INSUFFICIENT_FUNDS.toString(), false);
+            return;
+        }
+
+        if(MineUtils.isInventoryFull(player)) {
+            MineUtils.sendMessage(player, MessageManager.INVENTORY_FULL.toString(), false);
+            return;
+        }
+
+        WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.GIFT, player.getName(), null, amount);
+        economyManager.getEconomy().withdrawPlayer(player, amount);
+        MineUtils.sendMessage(player, MessageManager.GIFT_DEPOSIT.toString()
+                .replace("%amount%", String.valueOf(amount)), false);
+        player.getInventory().addItem(MineUtils.giftItem(player.getName(), amount));
     }
 
     private boolean reload(Player player) {
@@ -181,8 +298,8 @@ public class WEconomyCommand implements CommandExecutor {
             MineUtils.sendMessage(player, MessageManager.PLAYER_NOT_FOUND.toString(), false);
         } else {
             WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.TRANSACTION, player.getName(), receiver.getName(), amount);
-            economyManager.getEconomy().withdrawPlayer(player.getUniqueId().toString(), amount);
-            economyManager.getEconomy().depositPlayer(receiver.getUniqueId().toString(), amount);
+            economyManager.getEconomy().withdrawPlayer(player, amount);
+            economyManager.getEconomy().depositPlayer(receiver, amount);
             MineUtils.sendMessage(player, MessageManager.SEND_PAY.toString()
                     .replace("%receiver%", receiver.getName())
                     .replace("%amount%", String.valueOf(amount)), false);
@@ -219,7 +336,6 @@ public class WEconomyCommand implements CommandExecutor {
                     .replace("%sender%", player.getName())
                     .replace("%amount%", String.valueOf(amount)), false);
         }
-
     }
 
     private void givePlayer(String target, Double amount) {

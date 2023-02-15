@@ -2,6 +2,7 @@ package fr.ward.weconomy;
 
 import fr.ward.weconomy.command.WEconomyCommand;
 import fr.ward.weconomy.config.ConfigType;
+import fr.ward.weconomy.listeners.DepositListener;
 import fr.ward.weconomy.listeners.PlayerJoinLeaveListener;
 import fr.ward.weconomy.manager.*;
 import fr.ward.weconomy.placeholder.SomeExpansion;
@@ -70,6 +71,7 @@ public class WEconomy extends JavaPlugin {
 
         final PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new PlayerJoinLeaveListener(), this);
+        pluginManager.registerEvents(new DepositListener(), this);
 
         Objects.requireNonNull(this.getCommand("economy")).setExecutor(new WEconomyCommand());
 

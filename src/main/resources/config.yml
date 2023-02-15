@@ -4,3 +4,13 @@ options:
 
 economy:
   currencySymbol: '$'
+
+bag-item:
+  enabled: true
+  minimalAmount: 1000
+  maximalAmount: 100000
+
+gift-item:
+  enabled: true
+  minimalAmount: 1000
+  maximalAmount: 100000
