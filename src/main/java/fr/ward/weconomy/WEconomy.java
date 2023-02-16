@@ -127,9 +127,11 @@ public class WEconomy extends JavaPlugin {
     }
 
     private void checker() {
+        final String version = this.getDescription().getVersion();
+        getConfig().set("version", version);
         if(getConfig().getBoolean("check-update")) return;
-        new MineUpdater(this, 107785).getVersion(version -> {
-            if (this.getDescription().getVersion().equals(version)) {
+        new MineUpdater(this, 107785).getVersion(ver -> {
+            if (version.equals(ver)) {
                 MineLogger.info("There is not a new update available.");
             } else {
                 MineLogger.warning("There is a new update available.");

@@ -1,3 +1,5 @@
+version:
+
 options:
   check-update: true
   console-message: true
