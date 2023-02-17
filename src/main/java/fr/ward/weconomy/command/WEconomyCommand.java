@@ -130,7 +130,7 @@ public class WEconomyCommand implements CommandExecutor {
             return;
         }
 
-        if(checkPermission(player, "weconomy.bag")) {
+        if(checkPermission(player, "weconomy.bag") || checkPermission(player, "weconomy.player")) {
             MineUtils.sendMessage(player, MessageManager.NO_PERMISSION.toString()
                     .replace("%permission%", "weconomy.bag"), false);
             return;
@@ -182,7 +182,7 @@ public class WEconomyCommand implements CommandExecutor {
             return;
         }
 
-        if(checkPermission(player, "weconomy.gift")) {
+        if(checkPermission(player, "weconomy.gift") || checkPermission(player, "weconomy.player")) {
             MineUtils.sendMessage(player, MessageManager.NO_PERMISSION.toString()
                     .replace("%permission%", "weconomy.gift"), false);
             return;
@@ -227,7 +227,8 @@ public class WEconomyCommand implements CommandExecutor {
     }
 
     private boolean reload(Player player) {
-        if(player != null && checkPermission(player, "weconomy.reload")) {
+
+        if(player != null && checkPermission(player, "weconomy.reload") || player != null && checkPermission(player, "weconomy.admin")) {
             MineUtils.sendMessage(player, MessageManager.NO_PERMISSION.toString()
                     .replace("%permission%", "weconomy.reload"), false);
             return false;
@@ -244,7 +245,7 @@ public class WEconomyCommand implements CommandExecutor {
     }
 
     private void help(Player player) {
-        if(!checkPermission(player, "weconomy.reload")) {
+        if(!checkPermission(player, "weconomy.reload") || checkPermission(player, "weconomy.admin")) {
             for(String message : MessageListManager.HELP_ADMIN.toStringList()) {
                 player.sendMessage(MineUtils.color(message));
             }
@@ -256,7 +257,7 @@ public class WEconomyCommand implements CommandExecutor {
     }
 
     private void top(Player player) {
-        if(checkPermission(player, "weconomy.top")) {
+        if(checkPermission(player, "weconomy.top") || checkPermission(player, "weconomy.player")) {
             MineUtils.sendMessage(player, MessageManager.NO_PERMISSION.toString()
                     .replace("%permission%", "weconomy.top"), false);
             return;
@@ -271,7 +272,7 @@ public class WEconomyCommand implements CommandExecutor {
     private void payingPlayer(Player player, String target, Double amount) {
         final EconomyManager economyManager = WEconomy.getInstance().getEconomyManager();
 
-        if(checkPermission(player, "weconomy.pay")) {
+        if(checkPermission(player, "weconomy.pay") || checkPermission(player, "weconomy.player")) {
             MineUtils.sendMessage(player, MessageManager.NO_PERMISSION.toString()
                     .replace("%permission%", "weconomy.pay"), false);
             return;
@@ -312,7 +313,7 @@ public class WEconomyCommand implements CommandExecutor {
     private void givePlayer(Player player, String target, Double amount) {
         final EconomyManager economyManager = WEconomy.getInstance().getEconomyManager();
 
-        if(checkPermission(player, "weconomy.give")) {
+        if(checkPermission(player, "weconomy.give") || checkPermission(player, "weconomy.admin")) {
             MineUtils.sendMessage(player, MessageManager.NO_PERMISSION.toString()
                     .replace("%permission%", "weconomy.give"), false);
             return;
@@ -364,7 +365,7 @@ public class WEconomyCommand implements CommandExecutor {
     private void removePlayer(Player player, String target, Double amount) {
         final EconomyManager economyManager = WEconomy.getInstance().getEconomyManager();
 
-        if(checkPermission(player, "weconomy.remove")) {
+        if(checkPermission(player, "weconomy.remove") || checkPermission(player, "weconomy.admin")) {
             MineUtils.sendMessage(player, MessageManager.NO_PERMISSION.toString()
                     .replace("%permission%", "weconomy.remove"), false);
             return;
@@ -417,7 +418,7 @@ public class WEconomyCommand implements CommandExecutor {
         final CacheManager cacheManager = WEconomy.getInstance().getCacheManager();
         final Database database = WEconomy.getInstance().getDatabaseManager().getDatabase();
 
-        if(checkPermission(player, "weconomy.reset")) {
+        if(checkPermission(player, "weconomy.reset") || checkPermission(player, "weconomy.admin")) {
             MineUtils.sendMessage(player, MessageManager.NO_PERMISSION.toString()
                     .replace("%permission%", "weconomy.reset"), false);
             return;
@@ -448,7 +449,7 @@ public class WEconomyCommand implements CommandExecutor {
     private void reset(Player player, String target) {
         final EconomyManager economyManager = WEconomy.getInstance().getEconomyManager();
 
-        if(checkPermission(player, "weconomy.reset")) {
+        if(checkPermission(player, "weconomy.reset") || checkPermission(player, "weconomy.admin")) {
             MineUtils.sendMessage(player, MessageManager.NO_PERMISSION.toString()
                     .replace("%permission%", "weconomy.reset"), false);
             return;
