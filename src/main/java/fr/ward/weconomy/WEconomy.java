@@ -52,9 +52,6 @@ public class WEconomy extends JavaPlugin {
 
         checker();
 
-        getConfig().options().copyDefaults(true);
-        saveConfig();
-
         this.cacheManager = new CacheManager();
         this.configManager = new ConfigManager(this);
         this.databaseManager = new DatabaseManager();
@@ -136,6 +133,7 @@ public class WEconomy extends JavaPlugin {
             } else {
                 MineLogger.warning("There is a new update available.");
                 MineLogger.warning("https://www.spigotmc.org/resources/✅-weconomy-the-economy-easy-solution-1-16-5.107785/");
+                getConfig().set("version", "New update available : https://www.spigotmc.org/resources/✅-weconomy-the-economy-easy-solution-1-16-5.107785/");
             }
         });
     }

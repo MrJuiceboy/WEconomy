@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import fr.ward.weconomy.WEconomy;
 import fr.ward.weconomy.config.ConfigType;
 import fr.ward.weconomy.utils.MineLogger;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -77,7 +78,8 @@ public class MySQL extends Database {
             s.executeUpdate(MySQLCreateTokensTable);
             s.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            MineLogger.error("[MySQL] " + e);
+            Bukkit.getServer().getPluginManager().disablePlugin(WEconomy.getInstance());
         }
         initialize();
     }
