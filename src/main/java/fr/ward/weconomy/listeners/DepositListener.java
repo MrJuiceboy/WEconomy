@@ -45,7 +45,8 @@ public class DepositListener implements Listener {
         final EconomyManager economyManager = WEconomy.getInstance().getEconomyManager();
         economyManager.getEconomy().depositPlayer(player.getPlayer(), amount);
         MineUtils.sendMessage(player, MessageManager.RECEIVE_ITEM.toString()
-                .replace("%amount%", String.valueOf(amount)), false);
+                .replace("%amount%", String.valueOf(amount))
+                .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
         itemStack.setAmount(itemStack.getAmount() - 1);
     }
 
