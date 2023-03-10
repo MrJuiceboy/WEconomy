@@ -29,7 +29,7 @@ public enum DiscordMessage {
         if(receiver != null) {
             webhook.addEmbed(new DiscordWebhook.EmbedObject()
                     .setTitle("**" + this.title + "**")
-                    .addField(receiver, this.field + amount, true)
+                    .addField(receiver, this.field + amount + String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol")), true)
                     .setFooter("Send by " + sender, "")
                     .setColor(this.color));
         } else {

@@ -29,7 +29,8 @@ public class WEconomyCommand implements CommandExecutor {
 
             if(args[0].equals("balance") || args[0].equals("money")) {
                 MineUtils.sendMessage(player, MessageManager.GET_MONEY.toString()
-                        .replace("%current%", String.valueOf(WEconomy.getInstance().getCacheManager().getBalance(player))), false);
+                        .replace("%current%", String.valueOf(WEconomy.getInstance().getCacheManager().getBalance(player)))
+                        .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
                 return true;
             }
 
@@ -145,7 +146,8 @@ public class WEconomyCommand implements CommandExecutor {
 
         if(amount < minimalAmount) {
             MineUtils.sendMessage(player, MessageManager.MINIMAL_AMOUNT_DEPOT.toString()
-                    .replace("%amount%", String.valueOf(minimalAmount)), false);
+                    .replace("%amount%", String.valueOf(minimalAmount))
+                    .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
             return;
         }
 
@@ -153,7 +155,8 @@ public class WEconomyCommand implements CommandExecutor {
 
         if(amount > maximalAmount) {
             MineUtils.sendMessage(player, MessageManager.MAXIMUM_AMOUNT_DEPOT.toString()
-                    .replace("%amount%", String.valueOf(maximalAmount)), false);
+                    .replace("%amount%", String.valueOf(maximalAmount))
+                    .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
             return;
         }
 
@@ -170,7 +173,8 @@ public class WEconomyCommand implements CommandExecutor {
         WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.BAG, player.getName(), null, amount);
         economyManager.getEconomy().withdrawPlayer(player, amount);
         MineUtils.sendMessage(player, MessageManager.BAG_DEPOSIT.toString()
-                .replace("%amount%", String.valueOf(amount)), false);
+                .replace("%amount%", String.valueOf(amount))
+                .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
         player.getInventory().addItem(MineUtils.bagItem(player.getName(), amount));
     }
 
@@ -197,7 +201,8 @@ public class WEconomyCommand implements CommandExecutor {
 
         if(amount < minimalAmount) {
             MineUtils.sendMessage(player, MessageManager.MINIMAL_AMOUNT_DEPOT.toString()
-                    .replace("%amount%", String.valueOf(minimalAmount)), false);
+                    .replace("%amount%", String.valueOf(minimalAmount))
+                    .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
             return;
         }
 
@@ -205,7 +210,8 @@ public class WEconomyCommand implements CommandExecutor {
 
         if(amount > maximalAmount) {
             MineUtils.sendMessage(player, MessageManager.MAXIMUM_AMOUNT_DEPOT.toString()
-                    .replace("%amount%", String.valueOf(maximalAmount)), false);
+                    .replace("%amount%", String.valueOf(maximalAmount))
+                    .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
             return;
         }
 
@@ -222,7 +228,8 @@ public class WEconomyCommand implements CommandExecutor {
         WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.GIFT, player.getName(), null, amount);
         economyManager.getEconomy().withdrawPlayer(player, amount);
         MineUtils.sendMessage(player, MessageManager.GIFT_DEPOSIT.toString()
-                .replace("%amount%", String.valueOf(amount)), false);
+                .replace("%amount%", String.valueOf(amount))
+                .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
         player.getInventory().addItem(MineUtils.giftItem(player.getName(), amount));
     }
 
@@ -303,10 +310,12 @@ public class WEconomyCommand implements CommandExecutor {
             economyManager.getEconomy().depositPlayer(receiver, amount);
             MineUtils.sendMessage(player, MessageManager.SEND_PAY.toString()
                     .replace("%receiver%", receiver.getName())
-                    .replace("%amount%", String.valueOf(amount)), false);
+                    .replace("%amount%", String.valueOf(amount))
+                    .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
             MineUtils.sendMessage(receiver, MessageManager.RECEIVER_PAY.toString()
                     .replace("%sender%", player.getName())
-                    .replace("%amount%", String.valueOf(amount)), false);
+                    .replace("%amount%", String.valueOf(amount))
+                    .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
         }
     }
 
@@ -330,12 +339,14 @@ public class WEconomyCommand implements CommandExecutor {
         economyManager.getEconomy().depositPlayer(target, amount);
         MineUtils.sendMessage(player, MessageManager.SEND_GIVE.toString()
                 .replace("%receiver%", target)
-                .replace("%amount%", String.valueOf(amount)), false);
+                .replace("%amount%", String.valueOf(amount))
+                .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
 
         if(receiver != null) {
             MineUtils.sendMessage(receiver, MessageManager.RECEIVER_GIVE.toString()
                     .replace("%sender%", player.getName())
-                    .replace("%amount%", String.valueOf(amount)), false);
+                    .replace("%amount%", String.valueOf(amount))
+                    .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
         }
     }
 
@@ -353,12 +364,14 @@ public class WEconomyCommand implements CommandExecutor {
         economyManager.getEconomy().depositPlayer(target, amount);
         MineLogger.info(MessageManager.SEND_GIVE.toString()
                 .replace("%receiver%", target)
-                .replace("%amount%", String.valueOf(amount)));
+                .replace("%amount%", String.valueOf(amount))
+                .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))));
 
         if(receiver != null) {
             MineUtils.sendMessage(receiver, MessageManager.RECEIVER_GIVE.toString()
                     .replace("%sender%", "[Console]")
-                    .replace("%amount%", String.valueOf(amount)), true);
+                    .replace("%amount%", String.valueOf(amount))
+                    .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), true);
         }
     }
 
@@ -382,12 +395,14 @@ public class WEconomyCommand implements CommandExecutor {
         economyManager.getEconomy().withdrawPlayer(target, amount);
         MineUtils.sendMessage(player, MessageManager.SEND_REMOVE.toString()
                 .replace("%receiver%", target)
-                .replace("%amount%", String.valueOf(amount)), false);
+                .replace("%amount%", String.valueOf(amount))
+                .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
 
         if(receiver != null) {
             MineUtils.sendMessage(receiver, MessageManager.RECEIVER_REMOVE.toString()
                     .replace("%sender%", player.getName())
-                    .replace("%amount%", String.valueOf(amount)), false);
+                    .replace("%amount%", String.valueOf(amount))
+                    .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
         }
     }
 
@@ -405,12 +420,14 @@ public class WEconomyCommand implements CommandExecutor {
         economyManager.getEconomy().withdrawPlayer(target, amount);
         MineLogger.info(MessageManager.SEND_REMOVE.toString()
                 .replace("%receiver%", target)
-                .replace("%amount%", String.valueOf(amount)));
+                .replace("%amount%", String.valueOf(amount))
+                .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))));
 
         if(receiver != null) {
             MineUtils.sendMessage(receiver, MessageManager.RECEIVER_REMOVE.toString()
                     .replace("%sender%", "[Console]")
-                    .replace("%amount%", String.valueOf(amount)), true);
+                    .replace("%amount%", String.valueOf(amount))
+                    .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), true);
         }
     }
 
@@ -460,12 +477,14 @@ public class WEconomyCommand implements CommandExecutor {
         WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, player.getName(), target, economyManager.getEconomy().getBalance(target));
         MineUtils.sendMessage(player, MessageManager.SEND_REMOVE.toString()
                 .replace("%receiver%", target)
-                .replace("%amount%", String.valueOf(economyManager.getEconomy().getBalance(target))), false);
+                .replace("%amount%", String.valueOf(economyManager.getEconomy().getBalance(target)))
+                .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
 
         if(receiver != null) {
             MineUtils.sendMessage(receiver, MessageManager.RECEIVER_REMOVE.toString()
                     .replace("%sender%", player.getName())
-                    .replace("%amount%", String.valueOf(economyManager.getEconomy().getBalance(target))), false);
+                    .replace("%amount%", String.valueOf(economyManager.getEconomy().getBalance(target)))
+                    .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), false);
         }
         economyManager.getEconomy().withdrawPlayer(target, economyManager.getEconomy().getBalance(target));
     }
@@ -478,12 +497,14 @@ public class WEconomyCommand implements CommandExecutor {
         WEconomy.getInstance().getDiscordManager().sendMessage(DiscordMessage.REMOVE, "[Console]", target, economyManager.getEconomy().getBalance(target));
         MineLogger.info(MessageManager.SEND_REMOVE.toString()
                 .replace("%receiver%", target)
-                .replace("%amount%", String.valueOf(economyManager.getEconomy().getBalance(target))));
+                .replace("%amount%", String.valueOf(economyManager.getEconomy().getBalance(target)))
+                .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))));
 
         if(receiver != null) {
             MineUtils.sendMessage(receiver, MessageManager.RECEIVER_REMOVE.toString()
                     .replace("%sender%", "[Console]")
-                    .replace("%amount%", String.valueOf(economyManager.getEconomy().getBalance(target))), true);
+                    .replace("%amount%", String.valueOf(economyManager.getEconomy().getBalance(target)))
+                    .replace("%currency%", String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"))), true);
         }
         economyManager.getEconomy().withdrawPlayer(target, economyManager.getEconomy().getBalance(target));
     }

@@ -51,6 +51,7 @@ public class SomeExpansion extends PlaceholderExpansion {
             case "top_8" -> database.getTop(8);
             case "top_9" -> database.getTop(9);
             case "top_10" -> database.getTop(10);
+            case "currency" -> String.valueOf(WEconomy.getInstance().getConfig().getString("economy.currencySymbol"));
             default -> ChatColor.RED + "Error : PlaceHolderAPI";
         };
     }
